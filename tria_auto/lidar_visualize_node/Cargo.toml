@@ -1,0 +1,11 @@
+[package]
+name = "lidar_visualize_node"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hiroz = { git = "https://github.com/ZettaScaleLabs/hiroz.git" }
+hiroz-protocol = { git = "https://github.com/ZettaScaleLabs/hiroz.git" }
+hiroz-msgs = { git = "https://github.com/ZettaScaleLabs/hiroz.git" }  # Standard ROS 2 message types
+rerun = "0.34.1"
+tokio = { version = "1", features = ["full"] }  # Async runtime
