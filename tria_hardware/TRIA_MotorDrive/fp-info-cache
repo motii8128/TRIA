@@ -1,4 +1,4 @@
-27352904636463487
+27439553219234267
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -71826,13 +71826,6 @@ m78ar033-1
 0
 3
 3
-MPD7K020S
-MPD7K020S
-
-
-0
-11
-7
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
@@ -107939,3 +107932,24 @@ Varistor VF
 0
 2
 2
+footprints
+P-HSOP8-0405-1p27-002_TOS
+
+TB67H450FNG_EL 
+0
+9
+9
+footprints
+P-HSOP8-0405-1p27-002_TOS-L
+
+TB67H450FNG_EL 
+0
+9
+9
+footprints
+P-HSOP8-0405-1p27-002_TOS-M
+
+TB67H450FNG_EL 
+0
+9
+9

@@ -451,7 +451,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "SolidDrive_v2.kicad_pro",
+    "filename": "TRIA_MotorDrive.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -487,7 +487,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -647,10 +647,6 @@
     [
       "5e87e093-b650-4943-bd24-84d7273f5572",
       "MotorDrive"
-    ],
-    [
-      "003bb220-e1dc-4b2b-b34b-2e80cb669e68",
-      "CurrentSensor"
     ],
     [
       "8ed63ac2-ae42-4c41-a5fc-ad59024083e3",

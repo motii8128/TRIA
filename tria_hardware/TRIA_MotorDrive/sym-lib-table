@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "2026-08-25_01-12-29")(type "KiCad")(uri "${KIPRJMOD}/TB67H450FNG_EL/KiCADv6/2026-08-25_01-12-29.kicad_sym")(options "")(descr ""))
+  (lib (name "Seeeduino XIAO")(type "Legacy")(uri "${KIPRJMOD}/Seeeduino XIAO KICAD/Seeeduino XIAO.lib")(options "")(descr ""))
+)

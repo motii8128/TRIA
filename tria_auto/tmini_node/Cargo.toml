@@ -8,5 +8,5 @@ hiroz = { git = "https://github.com/ZettaScaleLabs/hiroz.git" }
 hiroz-protocol = { git = "https://github.com/ZettaScaleLabs/hiroz.git" }
 hiroz-msgs = { git = "https://github.com/ZettaScaleLabs/hiroz.git" }  # Standard ROS 2 message types
 tokio = { version = "1", features = ["full"] }  # Async runtime
-
+zenoh = {version = "1.5.1", features = ["shared-memory"]}
 rust_tmini_driver = {git = "https://github.com/motii8128/rust_tmini_driver.git"}

@@ -618,7 +618,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:+5V"
+		(symbol "power:+3.3V"
 			(power)
 			(pin_numbers
 				(hide yes)
@@ -639,7 +639,7 @@
 					(hide yes)
 				)
 			)
-			(property "Value" "+5V"
+			(property "Value" "+3.3V"
 				(at 0 3.556 0)
 				(effects
 					(font
@@ -665,7 +665,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(property "Description" "Power symbol creates a global label with name \"+3.3V\""
 				(at 0 0 0)
 				(effects
 					(font
@@ -683,7 +683,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "+5V_0_1"
+			(symbol "+3.3V_0_1"
 				(polyline
 					(pts
 						(xy -0.762 1.27) (xy 0 2.54)
@@ -721,7 +721,7 @@
 					)
 				)
 			)
-			(symbol "+5V_1_1"
+			(symbol "+3.3V_1_1"
 				(pin power_in line
 					(at 0 0 90)
 					(length 0)
@@ -964,22 +964,20 @@
 		(uuid "16ea99ec-ba06-44b1-8b57-92916604c963")
 	)
 	(junction
-		(at 146.05 63.5)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "48c117b1-f3a3-4203-8ccb-1a344a1bf621")
-	)
-	(junction
 		(at 132.08 63.5)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ab3a366f-89e7-46ba-8407-6c7c88733fc4")
 	)
-	(junction
-		(at 146.05 96.52)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "cc0484a2-db8f-4c8f-95be-2b02a8095106")
+	(wire
+		(pts
+			(xy 177.8 60.96) (xy 177.8 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0abccdca-87ec-42cf-9fc4-349b11c9698e")
 	)
 	(wire
 		(pts
@@ -1003,6 +1001,16 @@
 	)
 	(wire
 		(pts
+			(xy 177.8 104.14) (xy 177.8 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "173a9e65-42b1-482e-81e1-c52e38175080")
+	)
+	(wire
+		(pts
 			(xy 132.08 60.96) (xy 132.08 63.5)
 		)
 		(stroke
@@ -1023,6 +1031,16 @@
 	)
 	(wire
 		(pts
+			(xy 177.8 113.03) (xy 177.8 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1f1b36d6-d521-447e-b0e4-f63aa71cf764")
+	)
+	(wire
+		(pts
 			(xy 110.49 68.58) (xy 110.49 72.39)
 		)
 		(stroke
@@ -1030,26 +1048,6 @@
 			(type default)
 		)
 		(uuid "2360eefc-00aa-4368-9c02-9bf97ca48145")
-	)
-	(wire
-		(pts
-			(xy 146.05 80.01) (xy 146.05 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "270b2a75-a236-4c57-baf8-c48d94683bbe")
-	)
-	(wire
-		(pts
-			(xy 132.08 63.5) (xy 146.05 63.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "27fce5bc-1dad-493a-a723-d36abb8f42c7")
 	)
 	(wire
 		(pts
@@ -1063,6 +1061,16 @@
 	)
 	(wire
 		(pts
+			(xy 177.8 80.01) (xy 177.8 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4adb266d-c1eb-4763-b82a-6926a1a27ecb")
+	)
+	(wire
+		(pts
 			(xy 101.6 96.52) (xy 104.14 96.52)
 		)
 		(stroke
@@ -1073,13 +1081,33 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 113.03) (xy 146.05 115.57)
+			(xy 173.99 60.96) (xy 177.8 60.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "823e42f4-f3be-42fe-8f08-3b59b23d863e")
+		(uuid "54503a08-5f90-4301-93c5-0d182387b674")
+	)
+	(wire
+		(pts
+			(xy 177.8 96.52) (xy 177.8 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6b357ec2-c279-4f77-8c83-7667cf42a9be")
+	)
+	(wire
+		(pts
+			(xy 177.8 93.98) (xy 173.99 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f3d45cc-058a-410e-b514-4a973db6a023")
 	)
 	(wire
 		(pts
@@ -1113,26 +1141,6 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 71.12) (xy 146.05 72.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "95d16d8e-f6a9-402b-b19d-481455e5453d")
-	)
-	(wire
-		(pts
-			(xy 132.08 96.52) (xy 146.05 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d711c87-855c-4c88-963f-93e5ea95c1dc")
-	)
-	(wire
-		(pts
 			(xy 129.54 101.6) (xy 132.08 101.6)
 		)
 		(stroke
@@ -1150,6 +1158,16 @@
 			(type default)
 		)
 		(uuid "a9ad8f6d-e28a-442b-9efc-1796e5b7e231")
+	)
+	(wire
+		(pts
+			(xy 177.8 71.12) (xy 177.8 72.39)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b1190bde-fb06-434f-b875-91cdd0cfec93")
 	)
 	(wire
 		(pts
@@ -1173,7 +1191,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 63.5) (xy 152.4 63.5)
+			(xy 132.08 63.5) (xy 152.4 63.5)
 		)
 		(stroke
 			(width 0)
@@ -1193,7 +1211,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 96.52) (xy 152.4 96.52)
+			(xy 132.08 96.52) (xy 152.4 96.52)
 		)
 		(stroke
 			(width 0)
@@ -1231,16 +1249,6 @@
 		)
 		(uuid "fe99f3e4-5763-4395-929f-953a04d68cc9")
 	)
-	(wire
-		(pts
-			(xy 146.05 104.14) (xy 146.05 105.41)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ff3b0cae-6661-4525-bf97-dc96b892ea4d")
-	)
 	(hierarchical_label "pwm1_out"
 		(shape output)
 		(at 152.4 63.5 0)
@@ -1274,6 +1282,17 @@
 		)
 		(uuid "6b64306d-f186-4f1c-a53f-f231997d87ca")
 	)
+	(hierarchical_label "pwm2_in"
+		(shape input)
+		(at 173.99 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "717a9772-ec66-435f-89eb-da6cd64c5a46")
+	)
 	(hierarchical_label "pwm1_in"
 		(shape input)
 		(at 101.6 63.5 180)
@@ -1284,6 +1303,17 @@
 			(justify right)
 		)
 		(uuid "92c65030-2ecd-457b-9f42-69d7cbaec893")
+	)
+	(hierarchical_label "pwm1_in"
+		(shape input)
+		(at 173.99 60.96 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "eb4dd998-5459-4980-a962-6355bbee0bff")
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -1347,75 +1377,9 @@
 			(uuid "08566bc6-0f90-4f94-b597-05744649cb03")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "R16")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 146.05 82.55 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2631c7a5-7400-4eb4-8713-d3ee4bc3db83")
-		(property "Reference" "#PWR035"
-			(at 146.05 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 146.05 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 146.05 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 146.05 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 146.05 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "4c4c1389-8871-4d4d-a72f-9ed0171c194a")
-		)
-		(instances
-			(project "SolidDrive_v2_1"
-				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
-					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -1479,7 +1443,7 @@
 			(uuid "42224e1a-7c8f-41e3-9bcd-8fc87d290734")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "#PWR020")
 					(unit 1)
@@ -1489,7 +1453,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 146.05 109.22 90)
+		(at 177.8 109.22 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1498,7 +1462,7 @@
 		(fields_autoplaced yes)
 		(uuid "3b96f1f8-40c7-416f-907a-8c2e415cac5f")
 		(property "Reference" "D4"
-			(at 149.86 109.5374 90)
+			(at 181.61 109.5374 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1507,7 +1471,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 149.86 112.0774 90)
+			(at 181.61 112.0774 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1516,7 +1480,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D3.0mm"
-			(at 146.05 109.22 0)
+			(at 177.8 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1525,7 +1489,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 146.05 109.22 0)
+			(at 177.8 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1534,7 +1498,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 146.05 109.22 0)
+			(at 177.8 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1543,7 +1507,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 146.05 109.22 0)
+			(at 177.8 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1558,7 +1522,7 @@
 			(uuid "3f088db3-7e40-45bd-a0f1-765f599883b2")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "D4")
 					(unit 1)
@@ -1567,8 +1531,74 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 132.08 85.09 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4473dfc1-1268-4ea9-babd-dda26f4b7acc")
+		(property "Reference" "#PWR019"
+			(at 132.08 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 132.08 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 132.08 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 132.08 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 132.08 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "339bcba5-81b7-4d91-ba99-b493596c3368")
+		)
+		(instances
+			(project "TRIA_MotorDrive"
+				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
+					(reference "#PWR019")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:LED")
-		(at 146.05 76.2 90)
+		(at 177.8 76.2 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1577,7 +1607,7 @@
 		(fields_autoplaced yes)
 		(uuid "5576b12b-43cb-4c5b-a38a-5ede0943f67d")
 		(property "Reference" "D3"
-			(at 149.86 76.5174 90)
+			(at 181.61 76.5174 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1586,7 +1616,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 149.86 79.0574 90)
+			(at 181.61 79.0574 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1595,7 +1625,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D3.0mm"
-			(at 146.05 76.2 0)
+			(at 177.8 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1604,7 +1634,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 146.05 76.2 0)
+			(at 177.8 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1613,7 +1643,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 146.05 76.2 0)
+			(at 177.8 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1622,7 +1652,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 146.05 76.2 0)
+			(at 177.8 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1637,9 +1667,74 @@
 			(uuid "c1256fcb-cd2d-45d7-9f9e-ccb88aa03ff7")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "D3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDD")
+		(at 177.8 115.57 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "563162d0-af9d-49bb-b5de-5e36e791a97a")
+		(property "Reference" "#PWR025"
+			(at 177.8 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDD"
+			(at 177.8 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 177.8 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 177.8 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
+			(at 177.8 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6c68bf1d-3e48-4af2-8fca-9f76f0b7560b")
+		)
+		(instances
+			(project "TRIA_MotorDrive"
+				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -1705,7 +1800,7 @@
 			(uuid "3ef27d18-fa33-47f3-af77-349c8f93b357")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "R15")
 					(unit 1)
@@ -1770,7 +1865,7 @@
 			(uuid "faff1c88-013e-49a1-9b3c-75f5a34bbac4")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "#PWR023")
 					(unit 1)
@@ -1835,7 +1930,7 @@
 			(uuid "11ff2f07-160a-4fb5-9e17-b78bcaf48c26")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "#PWR018")
 					(unit 1)
@@ -1844,73 +1939,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 146.05 115.57 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "692ed061-9cef-4ad7-9607-ea2deb1f83ec")
-		(property "Reference" "#PWR036"
-			(at 146.05 121.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 146.05 120.65 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 146.05 115.57 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 146.05 115.57 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 146.05 115.57 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1b134e08-c994-4706-b0e8-3f84c94e352a")
-		)
-		(instances
-			(project "SolidDrive_v2_1"
-				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
-					(reference "#PWR036")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
+		(lib_id "power:+3.3V")
 		(at 132.08 50.8 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -1918,8 +1947,8 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "6a41641a-576c-48b7-ab15-c8ba07766396")
-		(property "Reference" "#PWR019"
+		(uuid "6f2d6c9d-47bf-4398-85d9-00834b6f0696")
+		(property "Reference" "#PWR012"
 			(at 132.08 54.61 0)
 			(effects
 				(font
@@ -1928,7 +1957,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+3.3V"
 			(at 132.08 45.72 0)
 			(effects
 				(font
@@ -1954,7 +1983,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
 			(at 132.08 50.8 0)
 			(effects
 				(font
@@ -1964,78 +1993,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "feee0df9-ec16-47b9-9862-5ffd8cbfec2c")
+			(uuid "d30b8335-c8e8-4720-abe8-c0b34fc67988")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
-					(reference "#PWR019")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 132.08 85.09 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "769f1c31-8d73-4a57-8086-3e440fbe5174")
-		(property "Reference" "#PWR025"
-			(at 132.08 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 132.08 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 132.08 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 132.08 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 132.08 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1a8f0e83-6523-4977-b6cf-fa79efb78fb4")
-		)
-		(instances
-			(project "SolidDrive_v2_1"
-				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
-					(reference "#PWR025")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -2103,7 +2066,7 @@
 			(uuid "abd6eec5-3398-4b1e-938e-72f47c5f4b07")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "R14")
 					(unit 1)
@@ -2113,7 +2076,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 146.05 67.31 180)
+		(at 177.8 67.31 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2122,7 +2085,7 @@
 		(fields_autoplaced yes)
 		(uuid "84190e1d-519d-4ee0-a97f-8bff0c8d2be0")
 		(property "Reference" "R20"
-			(at 148.59 66.0399 0)
+			(at 180.34 66.0399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2131,7 +2094,7 @@
 			)
 		)
 		(property "Value" "330"
-			(at 148.59 68.5799 0)
+			(at 180.34 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2140,7 +2103,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder"
-			(at 147.828 67.31 90)
+			(at 179.578 67.31 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2149,7 +2112,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 146.05 67.31 0)
+			(at 177.8 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2158,7 +2121,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 146.05 67.31 0)
+			(at 177.8 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2173,7 +2136,7 @@
 			(uuid "cfb3d4a9-22c4-4ae5-a182-c25a23b84bee")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "R20")
 					(unit 1)
@@ -2250,7 +2213,7 @@
 			(uuid "f10e7a84-073a-44eb-8127-3d9b98538013")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "U8")
 					(unit 1)
@@ -2260,7 +2223,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 146.05 100.33 180)
+		(at 177.8 100.33 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2269,7 +2232,7 @@
 		(fields_autoplaced yes)
 		(uuid "98452479-e3f8-45c1-9b3f-7f17c4e12b71")
 		(property "Reference" "R21"
-			(at 148.59 99.0599 0)
+			(at 180.34 99.0599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2278,7 +2241,7 @@
 			)
 		)
 		(property "Value" "330"
-			(at 148.59 101.5999 0)
+			(at 180.34 101.5999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2287,7 +2250,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder"
-			(at 147.828 100.33 90)
+			(at 179.578 100.33 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2296,7 +2259,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 146.05 100.33 0)
+			(at 177.8 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2305,7 +2268,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 146.05 100.33 0)
+			(at 177.8 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2320,7 +2283,7 @@
 			(uuid "0aa2c091-bd3b-4447-bda7-06164b0bfd8d")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "R21")
 					(unit 1)
@@ -2397,9 +2360,74 @@
 			(uuid "f1257548-8067-440a-a727-6d1c6df89da2")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "U6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDD")
+		(at 177.8 82.55 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bb6f417e-1b67-4112-bca6-11f1da7f27e7")
+		(property "Reference" "#PWR022"
+			(at 177.8 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDD"
+			(at 177.8 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 177.8 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 177.8 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
+			(at 177.8 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4f59899e-3b3c-4f02-bd86-4646c091a59c")
+		)
+		(instances
+			(project "TRIA_MotorDrive"
+				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
+					(reference "#PWR022")
 					(unit 1)
 				)
 			)
@@ -2463,7 +2491,7 @@
 			(uuid "69fc8e49-e9dd-438f-85fc-fd5d70a87f65")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "#PWR024")
 					(unit 1)
@@ -2531,7 +2559,7 @@
 			(uuid "ae60c5e8-cc27-4126-8969-7c0e42c5badf")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490/e017edb7-9da2-440f-89af-d59ec259a180"
 					(reference "R13")
 					(unit 1)

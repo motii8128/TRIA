@@ -451,7 +451,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "YdLidarBoard_v1.kicad_pro",
+    "filename": "TRIA_CentralControlBoard.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -613,6 +613,14 @@
     [
       "b2c4d92d-522b-4ecb-9815-99e1c86f3f8d",
       "Root"
+    ],
+    [
+      "e0549821-13ef-41ad-a2c8-35656822bcde",
+      "CAN"
+    ],
+    [
+      "6e85f3aa-3bdc-45e6-be8f-70eaeb0adf9e",
+      "Limit_Switch"
     ]
   ],
   "text_variables": {}

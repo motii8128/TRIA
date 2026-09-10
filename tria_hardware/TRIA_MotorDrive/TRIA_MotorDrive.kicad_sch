@@ -1275,7 +1275,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:+5V"
+		(symbol "power:+3.3V"
 			(power)
 			(pin_numbers
 				(hide yes)
@@ -1296,7 +1296,7 @@
 					(hide yes)
 				)
 			)
-			(property "Value" "+5V"
+			(property "Value" "+3.3V"
 				(at 0 3.556 0)
 				(effects
 					(font
@@ -1322,7 +1322,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(property "Description" "Power symbol creates a global label with name \"+3.3V\""
 				(at 0 0 0)
 				(effects
 					(font
@@ -1340,7 +1340,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "+5V_0_1"
+			(symbol "+3.3V_0_1"
 				(polyline
 					(pts
 						(xy -0.762 1.27) (xy 0 2.54)
@@ -1378,7 +1378,7 @@
 					)
 				)
 			)
-			(symbol "+5V_1_1"
+			(symbol "+3.3V_1_1"
 				(pin power_in line
 					(at 0 0 90)
 					(length 0)
@@ -1868,7 +1868,7 @@
 		(at 156.21 26.67)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "095a4045-2e95-4109-9c1f-c5bdb9b36a5f")
+		(uuid "04f0d80b-56a3-4ad7-9b4d-63876160ac28")
 	)
 	(junction
 		(at 115.57 26.67)
@@ -1980,6 +1980,16 @@
 	)
 	(wire
 		(pts
+			(xy 198.12 68.58) (xy 222.25 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08bf058e-d469-4f63-904d-d53377c8e5c3")
+	)
+	(wire
+		(pts
 			(xy 214.63 80.01) (xy 214.63 81.28)
 		)
 		(stroke
@@ -2017,6 +2027,16 @@
 			(type default)
 		)
 		(uuid "23232cba-4ba8-4ad8-bfb6-0f58125e1b83")
+	)
+	(wire
+		(pts
+			(xy 156.21 26.67) (xy 166.37 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24b342eb-4159-4633-8251-752e6062f7ac")
 	)
 	(wire
 		(pts
@@ -2097,16 +2117,6 @@
 			(type default)
 		)
 		(uuid "3ef97988-6723-4827-9c1d-c9e26c7b7ad5")
-	)
-	(wire
-		(pts
-			(xy 156.21 26.67) (xy 166.37 26.67)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4cd571ee-af39-4dc7-901b-464f874d30f4")
 	)
 	(wire
 		(pts
@@ -2210,16 +2220,6 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 91.44) (xy 127 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "835c9594-8faa-4bb1-a846-996c00c06167")
-	)
-	(wire
-		(pts
 			(xy 81.28 71.12) (xy 90.17 71.12)
 		)
 		(stroke
@@ -2277,16 +2277,6 @@
 			(type default)
 		)
 		(uuid "9afc3e8e-858f-4c71-92fc-3978878da176")
-	)
-	(wire
-		(pts
-			(xy 198.12 68.58) (xy 222.25 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d69897a-9c69-4fda-a089-d67f7f2d65ab")
 	)
 	(wire
 		(pts
@@ -2480,17 +2470,15 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x02_Pin")
-		(at 227.33 68.58 0)
-		(mirror y)
+		(at 227.33 71.12 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "083b9298-a0e1-4692-8c8e-5aa5fd463766")
 		(property "Reference" "J4"
-			(at 228.6 68.5799 0)
+			(at 228.6 71.1201 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2499,7 +2487,7 @@
 			)
 		)
 		(property "Value" "CAN"
-			(at 228.6 71.1199 0)
+			(at 228.6 68.5801 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2508,7 +2496,7 @@
 			)
 		)
 		(property "Footprint" "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical"
-			(at 227.33 68.58 0)
+			(at 227.33 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2517,7 +2505,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 227.33 68.58 0)
+			(at 227.33 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2526,7 +2514,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 227.33 68.58 0)
+			(at 227.33 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2541,7 +2529,7 @@
 			(uuid "93aec7e1-a3ba-4a04-9bcc-13b5c8c77864")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "J4")
 					(unit 1)
@@ -2611,9 +2599,79 @@
 			(uuid "594fb8d0-35aa-4571-a9db-d6e143fa6174")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "C6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Polarized")
+		(at 156.21 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1cc8f2d6-c8fb-45fb-8546-ba674ba91db4")
+		(property "Reference" "C1"
+			(at 160.02 28.3209 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF16V"
+			(at 160.02 30.8609 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm"
+			(at 157.1752 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 156.21 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Polarized capacitor"
+			(at 156.21 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "edadd2e2-680f-42bd-924e-69fa83a6a98b")
+		)
+		(pin "1"
+			(uuid "b03a268b-5da4-489f-9e81-a69576038697")
+		)
+		(instances
+			(project "TRIA_MotorDrive"
+				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
+					(reference "C1")
 					(unit 1)
 				)
 			)
@@ -2677,78 +2735,9 @@
 			(uuid "7058b4e5-f104-4971-8140-2aa8c86a7b69")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR026")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 156.21 30.48 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "2672e29f-94e6-47e8-81f8-04f48348e624")
-		(property "Reference" "C17"
-			(at 150.876 30.988 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "0.1u"
-			(at 150.622 33.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm"
-			(at 157.1752 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 156.21 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 156.21 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "12885fab-c07c-48ce-ad99-1114cc3bd303")
-		)
-		(pin "2"
-			(uuid "9b2c258e-d090-42c9-964b-abf4ee1df5a2")
-		)
-		(instances
-			(project "SolidDrive_v2_1"
-				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
-					(reference "C17")
 					(unit 1)
 				)
 			)
@@ -2814,7 +2803,7 @@
 			(uuid "0a1c2aa5-1983-4a63-b285-a9c5866a41fd")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR031")
 					(unit 1)
@@ -2880,7 +2869,7 @@
 			(uuid "72d06da4-4fb2-4903-a776-b364cb21e429")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR015")
 					(unit 1)
@@ -2946,7 +2935,7 @@
 			(uuid "80c1a0a9-57b1-4ca4-b4a5-2d37efbfd1f6")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR010")
 					(unit 1)
@@ -3015,9 +3004,75 @@
 			(uuid "3aa4021b-3144-45fa-9aef-f8439b7f4935")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "C8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 166.37 21.59 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "46729b2b-9669-4110-a164-ae8f6c8ee385")
+		(property "Reference" "#PWR01"
+			(at 166.37 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 166.37 16.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 166.37 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 166.37 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 166.37 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "476a4825-5fc7-4b77-8093-aa6b159c2fa5")
+		)
+		(instances
+			(project "TRIA_MotorDrive"
+				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)
@@ -3086,7 +3141,7 @@
 			(uuid "3f98e5fa-2f92-4029-b63e-8b2a11be3854")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "C16")
 					(unit 1)
@@ -3172,7 +3227,7 @@
 			(uuid "707630df-877e-4ce1-a49f-9701f1b6523b")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "D5")
 					(unit 1)
@@ -3243,7 +3298,7 @@
 			(uuid "4ae9c950-acf4-4b99-9880-a7b843501c73")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "U4")
 					(unit 1)
@@ -3313,7 +3368,7 @@
 			(uuid "2cdcb8f6-53a5-4a0d-8816-7de0d97adbca")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "C9")
 					(unit 1)
@@ -3384,7 +3439,7 @@
 			(uuid "60d591f3-db16-44b6-84a2-d0406e6ec931")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "J2")
 					(unit 1)
@@ -3450,7 +3505,7 @@
 			(uuid "ca748a3d-3d18-4a89-8420-90e79069aa41")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR013")
 					(unit 1)
@@ -3521,7 +3576,7 @@
 			(uuid "f189b9c2-ab1f-4b89-bda9-afe3cfd1a268")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "R18")
 					(unit 1)
@@ -3595,7 +3650,7 @@
 			(uuid "db82e8d0-a57c-46de-974b-08700465dd21")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "J3")
 					(unit 1)
@@ -3666,7 +3721,7 @@
 			(uuid "f1ee1ee3-27a2-4112-8cb4-324c7d1ba88d")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "R19")
 					(unit 1)
@@ -3737,75 +3792,9 @@
 			(uuid "91becd63-29ab-4244-9ee8-b0669fa084c8")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "J1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 166.37 21.59 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b2cce6e7-34c3-4e81-9d82-047968e0f420")
-		(property "Reference" "#PWR038"
-			(at 166.37 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 166.37 16.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 166.37 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 166.37 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 166.37 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0ada0541-3e5f-450d-bd67-f0ca30112258")
-		)
-		(instances
-			(project "SolidDrive_v2_1"
-				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
-					(reference "#PWR038")
 					(unit 1)
 				)
 			)
@@ -3872,7 +3861,7 @@
 			(uuid "0ba20036-8a89-4b37-a902-e93dd6f2a335")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "C7")
 					(unit 1)
@@ -3938,7 +3927,7 @@
 			(uuid "ab811b68-fd48-448b-b828-c116ba5a0388")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR09")
 					(unit 1)
@@ -4004,7 +3993,7 @@
 			(uuid "d8be37ab-d55d-4e43-a359-09092e52f5f1")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR014")
 					(unit 1)
@@ -4070,7 +4059,7 @@
 			(uuid "bdbf1b96-054b-48a1-a8e9-f421e8548965")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR017")
 					(unit 1)
@@ -4096,7 +4085,7 @@
 				)
 			)
 		)
-		(property "Value" "TA78L05S"
+		(property "Value" "LP2950L-33-T92"
 			(at 142.24 22.86 0)
 			(effects
 				(font
@@ -4142,7 +4131,7 @@
 			(uuid "3bb01890-8e98-4c40-bdd3-6101511abaa1")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "U7")
 					(unit 1)
@@ -4209,7 +4198,7 @@
 			(uuid "c4fc37e6-938c-4424-9019-9f76361c5543")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR030")
 					(unit 1)
@@ -4275,7 +4264,7 @@
 			(uuid "5810dc20-658d-4a28-b68e-7ff12ae757a9")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR039")
 					(unit 1)
@@ -4341,7 +4330,7 @@
 			(uuid "ea404bfb-b368-4d19-832a-94c2bd059f2d")
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(reference "#PWR032")
 					(unit 1)
@@ -4383,16 +4372,6 @@
 				(justify left top)
 			)
 		)
-		(pin "CurrentSensor" output
-			(at 81.28 91.44 0)
-			(uuid "69af2070-c192-4590-8f3d-538f353f8511")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
 		(pin "PWM1" input
 			(at 81.28 67.31 0)
 			(uuid "cafe79cc-0789-4b75-9566-8136ff55504b")
@@ -4414,7 +4393,7 @@
 			)
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(page "2")
 				)
@@ -4495,16 +4474,6 @@
 				(justify right)
 			)
 		)
-		(pin "CurrentSensor" input
-			(at 127 91.44 180)
-			(uuid "4d03816c-9b07-4351-9060-d5af9ab37264")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
 		(pin "ENCODER_A" input
 			(at 161.29 88.9 0)
 			(uuid "1b7676cf-d12c-4b99-9231-04c8a3710b8c")
@@ -4526,7 +4495,7 @@
 			)
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(page "4")
 				)
@@ -4608,7 +4577,7 @@
 			)
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(page "6")
 				)
@@ -4690,7 +4659,7 @@
 			)
 		)
 		(instances
-			(project "SolidDrive_v2_1"
+			(project "TRIA_MotorDrive"
 				(path "/694a36ee-0cf5-4b81-9e26-cc85b6240490"
 					(page "5")
 				)
