@@ -1,0 +1,9 @@
+[submodule "tria_firmware/LAN2CAN_Bridge/FreeRTOS-Kernel"]
+	path = tria_firmware/LAN2CAN_Bridge/FreeRTOS-Kernel
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+[submodule "tria_firmware/LAN2CAN_Bridge/zenoh-pico"]
+	path = tria_firmware/LAN2CAN_Bridge/zenoh-pico
+	url = https://github.com/eclipse-zenoh/zenoh-pico.git
+[submodule "tria_firmware/LAN2CAN_Bridge/nanopb"]
+	path = tria_firmware/LAN2CAN_Bridge/nanopb
+	url = https://github.com/nanopb/nanopb.git
