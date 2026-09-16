@@ -451,7 +451,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "TRIA_CentralControlBoard.kicad_pro",
+    "filename": "TRIA_LedControlBoard.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -615,12 +615,8 @@
       "Root"
     ],
     [
-      "e0549821-13ef-41ad-a2c8-35656822bcde",
-      "CAN"
-    ],
-    [
-      "6e85f3aa-3bdc-45e6-be8f-70eaeb0adf9e",
-      "Limit_Switch"
+      "e1ccb338-0900-4ac6-a410-38b6ba13ea0b",
+      "PhotoCoupler"
     ]
   ],
   "text_variables": {}
