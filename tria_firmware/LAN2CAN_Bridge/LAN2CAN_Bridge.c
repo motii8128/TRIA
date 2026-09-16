@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "pico/multicore.h"
 
 #include "user_config.h"
 
@@ -31,6 +32,8 @@ int main()
     tria_CommandPacket command = tria_CommandPacket_init_default;
     tria_SensorPacket sensor = tria_SensorPacket_init_default;
     bool udp_initialized = false;
+
+    multicore_launch_core1(udp_task);
 
     while (true) 
     {    
