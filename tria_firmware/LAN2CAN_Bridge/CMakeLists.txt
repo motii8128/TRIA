@@ -32,10 +32,14 @@ project(LAN2CAN_Bridge C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
+add_subdirectory(hkdt_pico)
+add_subdirectory(tria_message)
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(LAN2CAN_Bridge LAN2CAN_Bridge.c )
+add_executable(LAN2CAN_Bridge 
+    LAN2CAN_Bridge.c 
+)
 
 pico_set_program_name(LAN2CAN_Bridge "LAN2CAN_Bridge")
 pico_set_program_version(LAN2CAN_Bridge "0.1")
@@ -46,11 +50,15 @@ pico_enable_stdio_usb(LAN2CAN_Bridge 1)
 
 # Add the standard library to the build
 target_link_libraries(LAN2CAN_Bridge
-        pico_stdlib)
+        pico_stdlib
+        pico_multicore
+        hkdt_pico
+        tria_message
+)
 
 # Add the standard include files to the build
 target_include_directories(LAN2CAN_Bridge PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}
 )
 
 pico_add_extra_outputs(LAN2CAN_Bridge)
