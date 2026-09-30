@@ -1,0 +1,12 @@
+[package]
+name = "tria_message_rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+prost = "0.14"
+# Only necessary if using Protobuf well-known types:
+prost-types = "0.14"
+
+[build-dependencies]
+prost-build = "0.14.4"

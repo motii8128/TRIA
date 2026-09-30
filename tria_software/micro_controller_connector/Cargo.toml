@@ -1,0 +1,8 @@
+[package]
+name = "micro_controller_connector"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+zenoh = "1.10.1"
+tria_message_rs = {path = "../tria_message_rs"}
