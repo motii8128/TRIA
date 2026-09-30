@@ -34,7 +34,6 @@ project(LAN2CAN_Bridge C CXX ASM)
 pico_sdk_init()
 add_subdirectory(hkdt_pico)
 add_subdirectory(tria_message)
-
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(LAN2CAN_Bridge 

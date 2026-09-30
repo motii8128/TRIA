@@ -19,7 +19,6 @@ mutex_t g_mutex;
 SharedData g_data = {.command_packet = tria_CommandPacket_init_default, .sensor_packet = tria_SensorPacket_init_default, .udp_status = false};
 
 
-
 void udp_task(void)
 {
     int socket_num = 0;
@@ -72,6 +71,11 @@ void udp_task(void)
                 // データ受信に成功した場合
                 command = decode_command_packet(recv_buffer, recv_size);
             }
+            else
+            {
+                tria_CommandPacket zero = tria_CommandPacket_init_zero;
+                command = zero;
+            }
 
 
             // 送信処理を行う
@@ -92,7 +96,7 @@ void udp_task(void)
         }
         
         // 100回送信の失敗を確認したらW6300との通信を終了し初期化モードに戻る
-        if(udp_miss_count > 100)
+        if(udp_miss_count > 10)
         {
             close_w6300_ethernet(socket_num);
             initalized = false;

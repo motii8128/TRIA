@@ -26,11 +26,11 @@ tria_CommandPacket decode_command_packet(uint8_t* buffer, int buffer_size)
 
 int encode_sensor_packet(uint8_t* buffer, tria_SensorPacket sensor)
 {
-    pb_ostream_t out_stream = pb_ostream_from_buffer(buffer, 256);
+    pb_ostream_t out_stream = pb_ostream_from_buffer(buffer, 128);
 
     if (pb_encode(&out_stream, tria_SensorPacket_fields, &sensor))
     {
-        return out_stream.bytes_written;
+        return (int)out_stream.bytes_written;
     }
     else
     {

@@ -21,6 +21,9 @@ int main()
     stdio_init_all();
     mutex_init(&g_mutex);
 
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, true);
+
     canbus_setup(CAN_TX, CAN_RX, CAN_BIT_RATE);
 
     struct can2040_msg can_send_msg = {
@@ -28,6 +31,7 @@ int main()
         .dlc = 8,
         .data = {0,0,0,0,0,0,0,0}
     };
+    RoboMasterSensor rm = hp_sensor_init();
 
     tria_CommandPacket command = tria_CommandPacket_init_default;
     tria_SensorPacket sensor = tria_SensorPacket_init_default;
@@ -36,14 +40,17 @@ int main()
     multicore_launch_core1(udp_task);
 
     while (true) 
-    {    
+    {   
         mutex_enter_blocking(&g_mutex);
         command = g_data.command_packet;
         g_data.sensor_packet = sensor;
         udp_initialized = g_data.udp_status;
         mutex_exit(&g_mutex);
 
+        gpio_put(PICO_DEFAULT_LED_PIN, udp_initialized);
+
         int16_t tmp = command.hand_motor;
+        printf("%d\n", tmp);
         can_send_msg.data[0] = (tmp >> 8) & 0xFF;
         can_send_msg.data[1] = tmp & 0xFF;
 
@@ -54,7 +61,6 @@ int main()
         struct can2040_msg can_recv_msg;
         if(can_receive(&can_recv_msg))
         {
-            RoboMasterSensor rm;
             hp_parse_CANMessage(can_recv_msg.data, &rm);
 
             // CAN受信キューにデータがある場合
