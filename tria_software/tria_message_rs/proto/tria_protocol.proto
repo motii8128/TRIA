@@ -35,3 +35,17 @@ message Point2D {
   float x = 1;
   float y = 2;
 }
+
+// ２次元点群
+message PointCloud2D
+{
+  repeated Point2D points = 1;
+}
+
+// 位置の表現
+message Position2D
+{
+  float x = 1;
+  float y = 2;
+  float theta = 3;
+}
