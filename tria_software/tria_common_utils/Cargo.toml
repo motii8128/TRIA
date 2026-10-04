@@ -1,0 +1,8 @@
+[package]
+name = "tria_common_utils"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# 行列計算クレート
+nalgebra = "0.32.4"
