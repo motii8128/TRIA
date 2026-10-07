@@ -23,6 +23,26 @@ message SensorPacket {
   int32 vertical_limit_switch = 6;
 }
 
+// モーターひとつのセンサーデータ
+message MotorSensor
+{
+  float velocity = 1;
+  float position = 2;
+  float torque = 3;
+}
+
+// 機構の位置を表現
+message MachineSensors
+{
+  int32 horizontal_limit_switch = 1;
+  MotorSensor horizontal_motor = 2;
+  
+  int32 vertical_limit_switch = 3;
+  MotorSensor vertical_motor = 4;
+
+  MotorSensor hand_motor = 5;
+}
+
 // 足回りへの速度命令
 message WheelVelocity {
   float x_velocity = 1;
