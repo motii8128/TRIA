@@ -1,0 +1,12 @@
+[package]
+name = "tria_core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+zenoh = "1.10.1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "signal"] }
+
+zenohpb = {path = "../zenohpb"}
+tria_message_rs = {path = "../tria_message_rs"}
+tria_common_utils = {path = "../tria_common_utils"}
