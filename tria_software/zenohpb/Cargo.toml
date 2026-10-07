@@ -1,0 +1,9 @@
+[package]
+name = "zenohpb"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+zenoh = "1.10.1"
+prost = "0.14"
+tokio = { version = "1", features = ["rt", "macros", "sync"] }
