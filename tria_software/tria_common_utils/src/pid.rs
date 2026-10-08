@@ -139,3 +139,23 @@ impl PID {
         }
     }
 }
+
+pub struct CascadePID
+{
+    primary : PID,
+    secondary : PID
+}
+
+impl CascadePID {
+    pub fn new(primary_config : PidConfig, secondary_config : PidConfig)->Self
+    {
+        Self { primary: PID::new(primary_config), secondary: PID::new(secondary_config) }
+    }
+
+    pub fn compute(&mut self, target_pos : f32, current_pos : f32, current_vel : f32, delta_time : f32)-> f32
+    {
+        let target_vel = self.primary.compute(target_pos, current_pos, delta_time);
+
+        self.secondary.compute(target_vel, current_vel, delta_time)
+    }
+}
