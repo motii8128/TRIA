@@ -1,4 +1,5 @@
 pub mod robomaster;
+pub mod pid;
 
 use nalgebra::Isometry2;
 
