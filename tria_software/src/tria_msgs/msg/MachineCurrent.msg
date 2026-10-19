@@ -1,0 +1,3 @@
+int16 vertical_motor
+int16 horizontal_motor
+int16 hand_motor

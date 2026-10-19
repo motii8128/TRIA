@@ -1,1 +1,3 @@
-/tria_software/target
+/tria_software/build
+/tria_software/install
+/tria_software/log
