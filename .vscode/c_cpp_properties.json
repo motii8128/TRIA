@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/ros/jazzy/include/**"
+                "/opt/ros/jazzy/include/**",
+                "${workspaceFolder}/tria_software/build/tria_msgs/rosidl_generator_cpp"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
