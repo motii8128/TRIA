@@ -1,0 +1,24 @@
+syntax = "proto3";
+package tria;
+
+// Rust -> Pico2 (制御コマンド)
+message CommandPacket {
+    int32 horizontal_motor = 1;
+    int32 vertical_motor = 2;
+    int32 hand_motor = 3;
+    int32 wheel1 = 4;
+    int32 wheel2 = 5;
+    int32 wheel3 = 6;
+}
+
+
+// Pico2 -> Rust (レスポンス)
+message SensorPacket {
+  int32 can_id = 1;
+  int32 velocity = 2;
+  int32 angle = 3;
+  int32 torque = 4;
+
+  int32 horizontal_limit_switch = 5;
+  int32 vertical_limit_switch = 6;
+}
