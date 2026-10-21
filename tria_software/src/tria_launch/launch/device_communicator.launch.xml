@@ -1,0 +1,5 @@
+<launch>
+  <!-- マイコンとの通信 -->
+  <include file="$(find-pkg-share tria_launch)/launch/device_communicator/ccb_communicator.launch.xml" />
+
+</launch>

@@ -1,0 +1,27 @@
+<launch>
+  <arg name="my_addr" default="192.168.1.100"/>
+  <arg name="my_port" default="8888"/>
+  <arg name="dest_addr" default="192.168.1.100"/>
+  <arg name="dest_port" default="8888"/>
+
+  <arg name="interval_ms" default="1"/>
+  <arg name="timeout_ms" default="10"/>
+
+  <!-- ノードの起動 -->
+  <node pkg="device_communicator" exec="ccb_communicator" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="udp_my_addr" value="$(var my_addr)"/>
+    <param name="udp_my_port" value="$(var my_port)"/>
+    <param name="udp_dest_addr" value="$(var dest_addr)"/>
+    <param name="udp_dest_port" value="$(var dest_port)"/>
+
+    <param name="udp_interval_ms" value="$(var interval_ms)"/>
+    <param name="udp_timeout_ms" value="$(var timeout_ms)"/>
+
+    <!-- トピックのremap -->
+    <remap from="/ccb/machine_current" to="/ccb/machine_current"/>
+    <remap from="/ccb/wheel_duty" to="/ccb/wheel_duty"/>
+    <remap from="/ccb/sensor_feedback" to="/ccb/sensor_feedback"/>
+  </node>
+
+</launch>
