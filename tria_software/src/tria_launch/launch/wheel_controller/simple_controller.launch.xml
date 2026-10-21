@@ -1,0 +1,24 @@
+<launch>
+  <arg name="body_radius" default="0.3"/>
+  <arg name="wheel1_angle" default="300.0"/>
+  <arg name="wheel2_angle" default="60.0"/>
+  <arg name="wheel3_angle" default="180.0"/>
+  <arg name="max_speed" default="1.0"/>
+
+
+  <!-- ノードの起動 -->
+  <node pkg="wheel_controller" exec="simple_controller" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="body_radius" value="$(var body_radius)"/>
+    <param name="wheel1_angle" value="$(var wheel1_angle)"/>
+    <param name="wheel2_angle" value="$(var wheel2_angle)"/>
+    <param name="wheel3_angle" value="$(var wheel3_angle)"/>
+    <param name="max_speed" value="$(var max_speed)"/>
+
+    <!-- トピックのremap -->
+    <remap from="/cmd_vel" to="/cmd_vel"/>
+    <remap from="/ccb/wheel_duty" to="/ccb/wheel_duty"/>
+    
+  </node>
+
+</launch>
