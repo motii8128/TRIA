@@ -138,6 +138,8 @@ namespace device_communicator
                     RCLCPP_INFO(this->get_logger(), "CCBとのコネクションが正常です。");
                     udp_success_count_ = 0;
                 }
+
+                feedback_publisher_->publish(sensor_feedback_);
             }
             else
             {
