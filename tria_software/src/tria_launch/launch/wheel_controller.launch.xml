@@ -1,0 +1,5 @@
+<launch>
+  <!-- マイコンとの通信 -->
+  <include file="$(find-pkg-share tria_launch)/launch/wheel_controller/simple_controller.launch.xml" />
+
+</launch>

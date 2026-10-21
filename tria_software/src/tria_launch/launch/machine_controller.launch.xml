@@ -1,0 +1,5 @@
+<launch>
+  <!-- マイコンとの通信 -->
+  <include file="$(find-pkg-share tria_launch)/launch/machine_controller/pid_controller.launch.xml" />
+
+</launch>

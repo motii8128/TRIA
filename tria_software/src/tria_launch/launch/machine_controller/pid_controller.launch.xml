@@ -1,0 +1,86 @@
+<launch>
+    <!-- 上下機構パラメータ -->
+    <arg name="vertical.pos.p_gain" default="1.0"/>
+    <arg name="vertical.pos.i_gain" default="0.0"/>
+    <arg name="vertical.pos.d_gain" default="0.0"/>
+    <arg name="vertical.pos.max_output" default="1000.0"/>
+    <arg name="vertical.pos.max_integral" default="1000.0"/>
+
+    <arg name="vertical.vel.p_gain" default="1.0"/>
+    <arg name="vertical.vel.i_gain" default="0.0"/>
+    <arg name="vertical.vel.d_gain" default="0.0"/>
+    <arg name="vertical.vel.max_output" default="1000.0"/>
+    <arg name="vertical.vel.max_integral" default="1000.0"/>
+
+    <!-- 水平移動機構パラメータ -->
+    <arg name="horizontal.pos.p_gain" default="1.0"/>
+    <arg name="horizontal.pos.i_gain" default="0.0"/>
+    <arg name="horizontal.pos.d_gain" default="0.0"/>
+    <arg name="horizontal.pos.max_output" default="1000.0"/>
+    <arg name="horizontal.pos.max_integral" default="1000.0"/>
+
+    <arg name="horizontal.vel.p_gain" default="1.0"/>
+    <arg name="horizontal.vel.i_gain" default="0.0"/>
+    <arg name="horizontal.vel.d_gain" default="0.0"/>
+    <arg name="horizontal.vel.max_output" default="1000.0"/>
+    <arg name="horizontal.vel.max_integral" default="1000.0"/>
+
+    <!-- ハンド機構パラメータ -->
+    <arg name="hand.pos.p_gain" default="1.0"/>
+    <arg name="hand.pos.i_gain" default="0.0"/>
+    <arg name="hand.pos.d_gain" default="0.0"/>
+    <arg name="hand.pos.max_output" default="1000.0"/>
+    <arg name="hand.pos.max_integral" default="1000.0"/>
+
+    <arg name="hand.vel.p_gain" default="1.0"/>
+    <arg name="hand.vel.i_gain" default="0.0"/>
+    <arg name="hand.vel.d_gain" default="0.0"/>
+    <arg name="hand.vel.max_output" default="1000.0"/>
+    <arg name="hand.vel.max_integral" default="1000.0"/>
+
+
+
+  <!-- ノードの起動 -->
+    <node pkg="machine_controller" exec="pid_controller" output="screen">
+        <!-- パラメータを直接指定 -->
+        <param name="vertical.pos.p_gain" value="$(var vertical.pos.p_gain)"/>
+        <param name="vertical.pos.i_gain" value="$(var vertical.pos.i_gain)"/>
+        <param name="vertical.pos.d_gain" value="$(var vertical.pos.d_gain)"/>
+        <param name="vertical.pos.max_output" value="$(var vertical.pos.max_output)"/>
+        <param name="vertical.pos.max_integral" value="$(var vertical.pos.max_integral)"/>
+        <param name="vertical.vel.p_gain" value="$(var vertical.vel.p_gain)"/>
+        <param name="vertical.vel.i_gain" value="$(var vertical.vel.i_gain)"/>
+        <param name="vertical.vel.d_gain" value="$(var vertical.vel.d_gain)"/>
+        <param name="vertical.vel.max_output" value="$(var vertical.vel.max_output)"/>
+        <param name="vertical.vel.max_integral" value="$(var vertical.vel.max_integral)"/>
+
+        <param name="horizontal.pos.p_gain" value="$(var horizontal.pos.p_gain)"/>
+        <param name="horizontal.pos.i_gain" value="$(var horizontal.pos.i_gain)"/>
+        <param name="horizontal.pos.d_gain" value="$(var horizontal.pos.d_gain)"/>
+        <param name="horizontal.pos.max_output" value="$(var horizontal.pos.max_output)"/>
+        <param name="horizontal.pos.max_integral" value="$(var horizontal.pos.max_integral)"/>
+        <param name="horizontal.vel.p_gain" value="$(var horizontal.vel.p_gain)"/>
+        <param name="horizontal.vel.i_gain" value="$(var horizontal.vel.i_gain)"/>
+        <param name="horizontal.vel.d_gain" value="$(var horizontal.vel.d_gain)"/>
+        <param name="horizontal.vel.max_output" value="$(var horizontal.vel.max_output)"/>
+        <param name="horizontal.vel.max_integral" value="$(var horizontal.vel.max_integral)"/>
+
+        <param name="hand.pos.p_gain" value="$(var hand.pos.p_gain)"/>
+        <param name="hand.pos.i_gain" value="$(var hand.pos.i_gain)"/>
+        <param name="hand.pos.d_gain" value="$(var hand.pos.d_gain)"/>
+        <param name="hand.pos.max_output" value="$(var hand.pos.max_output)"/>
+        <param name="hand.pos.max_integral" value="$(var hand.pos.max_integral)"/>
+        <param name="hand.vel.p_gain" value="$(var hand.vel.p_gain)"/>
+        <param name="hand.vel.i_gain" value="$(var hand.vel.i_gain)"/>
+        <param name="hand.vel.d_gain" value="$(var hand.vel.d_gain)"/>
+        <param name="hand.vel.max_output" value="$(var hand.vel.max_output)"/>
+        <param name="hand.vel.max_integral" value="$(var hand.vel.max_integral)"/>
+
+        <!-- トピックのremap -->
+        <remap from="/machine_control" to="/machine_control"/>
+        <remap from="/ccb/machine_current" to="/ccb/machine_current"/>
+        <remap from="/ccb/sensor_feedback" to="/ccb/sensor_feedback"/>
+
+    </node>
+
+</launch>
