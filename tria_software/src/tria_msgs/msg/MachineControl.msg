@@ -1,0 +1,5 @@
+bool calibration
+
+float32 vertical_position
+float32 horizontal_position
+float32 hand_position

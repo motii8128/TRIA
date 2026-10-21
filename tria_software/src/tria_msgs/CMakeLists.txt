@@ -9,6 +9,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MachineCurrent.msg"
+  "msg/MachineControl.msg"
   "msg/WheelDuty.msg"
   "msg/MotorFeedback.msg"
   "msg/SensorFeedback.msg"
