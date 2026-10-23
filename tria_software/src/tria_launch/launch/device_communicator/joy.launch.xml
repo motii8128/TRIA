@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="joy" exec="joy_node"/>
+</launch>

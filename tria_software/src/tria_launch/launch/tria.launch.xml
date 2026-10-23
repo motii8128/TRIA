@@ -1,5 +1,5 @@
 <launch>
-  <include file="$(find-pkg-share tria_launch)/launch/wheel_controller.launch.xml" />
+  <!-- <include file="$(find-pkg-share tria_launch)/launch/wheel_controller.launch.xml" /> -->
   <include file="$(find-pkg-share tria_launch)/launch/machine_controller.launch.xml" />
   <include file="$(find-pkg-share tria_launch)/launch/device_communicator.launch.xml" />
 </launch>

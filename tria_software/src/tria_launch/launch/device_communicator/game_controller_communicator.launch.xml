@@ -1,0 +1,30 @@
+<launch>
+  <arg name="vertical_position_max" default="10.0"/>
+  <arg name="vertical_position_min" default="0.0"/>
+  <arg name="horizontal_position_max" default="10.0"/>
+  <arg name="horizontal_position_min" default="0.0"/>
+  <arg name="hand_position_max" default="10.0"/>
+  <arg name="hand_position_min" default="0.0"/>
+  
+  
+
+  <!-- ノードの起動 -->
+  <node pkg="device_communicator" exec="game_controller_communicator" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="vertical.position.max" value="$(var vertical_position_max)"/>
+    <param name="vertical.position.min" value="$(var vertical_position_min)"/>
+
+    <param name="horizontal.position.max" value="$(var horizontal_position_max)"/>
+    <param name="horizontal.position.min" value="$(var horizontal_position_min)"/>
+
+    <param name="hand.position.max" value="$(var hand_position_max)"/>
+    <param name="hand.position.min" value="$(var hand_position_min)"/>
+
+
+    <!-- トピックのremap -->
+    <remap from="/ccb/machine_current" to="/ccb/machine_current"/>
+    <remap from="/ccb/wheel_duty" to="/ccb/wheel_duty"/>
+    <remap from="/ccb/sensor_feedback" to="/ccb/sensor_feedback"/>
+  </node>
+
+</launch>

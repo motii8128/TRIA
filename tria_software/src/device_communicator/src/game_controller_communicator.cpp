@@ -25,17 +25,20 @@ namespace device_communicator
         machine_control_publisher_ = this->create_publisher<tria_msgs::msg::MachineControl>("/machine_control", rclcpp::SystemDefaultsQoS());
 
         RCLCPP_INFO(this->get_logger(), "%sを初期化しました", this->get_name());
+        RCLCPP_INFO(this->get_logger(), "上下移動機構：\tmax=%lf\tmin=%lf", vertical_max_position_, vertical_min_position_);
+        RCLCPP_INFO(this->get_logger(), "前後移動機構：\tmax=%lf\tmin=%lf", horizontal_max_position_, horizontal_min_position_);
+        RCLCPP_INFO(this->get_logger(), "ハンド機構：\tmax=%lf\tmin=%lf", hand_max_position_, hand_min_position_);
     }
 
     void GameControllerCommunicator::joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
     {
-        const auto x_axis = -1.0 * msg->axes[7];
-        const auto y_axis = 1.0 * msg->axes[6];
+        const auto x_axis = 1.0 * msg->axes[7];
+        const auto y_axis = -1.0 * msg->axes[6];
 
-        const auto cc = msg->buttons[2] - msg->buttons[1];
+        const auto cc = msg->buttons[1] - msg->buttons[0];
         
-        machine_control_msg_.horizontal_position = x_axis;
-        machine_control_msg_.vertical_position = y_axis;
+        machine_control_msg_.horizontal_position += x_axis;
+        machine_control_msg_.vertical_position += y_axis;
 
         if(cc > 0)
         {

@@ -2,4 +2,7 @@
   <!-- マイコンとの通信 -->
   <include file="$(find-pkg-share tria_launch)/launch/device_communicator/ccb_communicator.launch.xml" />
 
+  <include file="$(find-pkg-share tria_launch)/launch/device_communicator/game_controller_communicator.launch.xml" />
+  <include file="$(find-pkg-share tria_launch)/launch/device_communicator/joy.launch.xml" />
+
 </launch>
