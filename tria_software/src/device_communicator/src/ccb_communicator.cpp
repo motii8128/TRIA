@@ -7,7 +7,10 @@ namespace device_communicator
         udp_success_count_ = 0;
 
         // ロボマスクラスを初期化
-        for(int i = 0; i < 3; i++)robomaster_[i] = RoboMaster();
+        for(int i = 0; i < 3; i++)
+        {
+            robomaster_[i] = RoboMaster();
+        }
 
         my_addr_ = this->declare_parameter("udp_my_addr", "127.0.0.1");
         dest_addr_ = this->declare_parameter("udp_dest_addr", "127.0.0.1");
@@ -91,10 +94,10 @@ namespace device_communicator
         // 受信したメッセージから送信するパケットを作成
         const auto command_packet = create_command_packet();
 
-        std::string send_buffer;
-        command_packet.SerializeToString(&send_buffer);
+        uint8_t send_buffer[64];
+        command_packet.SerializeToArray(send_buffer, 64);
 
-        const auto send_result = udp_->send(send_buffer.data(), send_buffer.size(), dest_addr_, dest_port_);
+        const auto send_result = udp_->send(send_buffer, 64, dest_addr_, dest_port_);
 
         if(send_result == UDP_STATE::OK_UDP)
         {
@@ -103,11 +106,12 @@ namespace device_communicator
 
             const auto recv_result = udp_->receive(recv_buffer, 50);
 
-            if(recv_result == UDP_STATE::OK_UDP)
+            if(recv_result > 0)
             {
                 tria::SensorPacket sensor;
-                if(sensor.ParseFromArray(recv_buffer, 50))
+                if(sensor.ParseFromArray(recv_buffer, recv_result))
                 {
+                    udp_success_count_++;
                     switch (sensor.can_id())
                     {
                     case 1:
@@ -130,8 +134,6 @@ namespace device_communicator
                         break;
                     }
                 }
-
-                udp_success_count_++;
 
                 if(udp_success_count_ == 500)
                 {
