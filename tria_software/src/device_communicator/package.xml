@@ -11,6 +11,7 @@
 
   <depend>rclcpp</depend>
   <depend>tria_msgs</depend>
+  <depend>sensor_msgs</depend>
   <depend>libprotobuf-dev</depend>
   <build_depend>protobuf-dev</build_depend>
   <build_depend>protobuf-compiler</build_depend>

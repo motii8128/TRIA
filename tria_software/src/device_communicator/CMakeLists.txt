@@ -5,6 +5,7 @@ project(device_communicator)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tria_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(Protobuf REQUIRED)
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS proto/tria.proto)
@@ -17,6 +18,8 @@ target_include_directories(tria_pb PUBLIC
 target_link_libraries(tria_pb PUBLIC ${Protobuf_LIBRARIES})
 set_target_properties(tria_pb PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+
+# CentralControlBoardCommunicator
 add_executable(ccb_communicator src/ccb_communicator.cpp)
 
 target_include_directories(ccb_communicator
@@ -27,8 +30,19 @@ target_include_directories(ccb_communicator
 target_link_libraries(ccb_communicator tria_pb)
 ament_target_dependencies(ccb_communicator rclcpp tria_msgs)
 
+
+# GameControllerCommunicator
+add_executable(game_controller_communicator src/game_controller_communicator.cpp)
+
+target_include_directories(game_controller_communicator
+  SYSTEM PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+)
+ament_target_dependencies(game_controller_communicator rclcpp tria_msgs sensor_msgs)
+
 install(TARGETS
   ccb_communicator
+  game_controller_communicator
   DESTINATION lib/${PROJECT_NAME}
 )
 
