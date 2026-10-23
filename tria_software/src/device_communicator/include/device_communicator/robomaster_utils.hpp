@@ -35,11 +35,25 @@ namespace device_communicator
 
                 if (delta_count > 4096)
                 {
-                    delta_count -= 8192;
+                    if(velocity_in > 0)
+                    {
+
+                    }
+                    else
+                    {
+                        delta_count -= 8192;
+                    }
                 }
                 else if (delta_count < -4096)
                 {
-                    delta_count += 8192;
+                    if(velocity_in < 0)
+                    {
+
+                    }
+                    else
+                    {
+                        delta_count += 8192;
+                    }
                 }
 
                 position += static_cast<float>(delta_count) / 8192.0f;
