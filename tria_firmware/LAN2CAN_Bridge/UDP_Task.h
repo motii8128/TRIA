@@ -93,6 +93,10 @@ void udp_task(void)
                     udp_miss_count++;
                 }
             }
+            else
+            {
+                udp_miss_count++;
+            }
         }
         
         // 100回送信の失敗を確認したらW6300との通信を終了し初期化モードに戻る

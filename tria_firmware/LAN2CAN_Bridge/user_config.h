@@ -13,8 +13,8 @@
 
 
 //////////// CAN通信設定 ////////////
-#define CAN_TX 7
-#define CAN_RX 6
+#define CAN_TX 6
+#define CAN_RX 7
 #define CAN_BIT_RATE 1000000
 
 
