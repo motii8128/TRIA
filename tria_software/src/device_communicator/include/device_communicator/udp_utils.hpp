@@ -75,7 +75,7 @@ namespace device_communicator
 
         /// @brief 受信を行う。
         /// @return 成功か失敗か返す
-        UDP_STATE receive(uint8_t* buffer, size_t size)
+        int receive(uint8_t* buffer, size_t size)
         {
             ssize_t len = recv(sock_fd_, buffer, size, 0);
 
@@ -83,12 +83,12 @@ namespace device_communicator
             {
                 buffer[len] = '\0';
 
-                return UDP_STATE::OK_UDP;
+                return len;
             }
             else
             {
                 // close(sock_fd_);
-                return UDP_STATE::ERR_UDP;
+                return -1;
             }
         }
 
@@ -97,7 +97,7 @@ namespace device_communicator
         /// @param dest_addr 送信先のアドレス
         /// @param dest_port 送信先のポート
         /// @return 成功か失敗か返す
-        UDP_STATE send(const char* tx_packet, size_t length, std::string dest_addr, uint16_t dest_port)
+        UDP_STATE send(const uint8_t* tx_packet, size_t length, std::string dest_addr, uint16_t dest_port)
         {
             sockaddr_in dest_addr_{};
             dest_addr_.sin_family = AF_INET;
