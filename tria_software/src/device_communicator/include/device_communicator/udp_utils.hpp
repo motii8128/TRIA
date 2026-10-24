@@ -97,7 +97,7 @@ namespace device_communicator
         /// @param dest_addr 送信先のアドレス
         /// @param dest_port 送信先のポート
         /// @return 成功か失敗か返す
-        UDP_STATE send(const uint8_t* tx_packet, size_t length, std::string dest_addr, uint16_t dest_port)
+        UDP_STATE send(const char* tx_packet, size_t length, std::string dest_addr, uint16_t dest_port)
         {
             sockaddr_in dest_addr_{};
             dest_addr_.sin_family = AF_INET;

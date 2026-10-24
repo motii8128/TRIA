@@ -7,6 +7,8 @@
 #include "w6300_ethernet.h" /* W6300を用いたEthernet通信に必要 */
 #include "tria_message/tria_message.h" /* 通信に用いるパケットが記述されている */
 
+#include <stdio.h>
+
 // コア間で共有するデータ構造体
 typedef struct{
     tria_CommandPacket command_packet;
@@ -71,11 +73,11 @@ void udp_task(void)
                 // データ受信に成功した場合
                 command = decode_command_packet(recv_buffer, recv_size);
             }
-            else
-            {
-                tria_CommandPacket zero = tria_CommandPacket_init_zero;
-                command = zero;
-            }
+            // else
+            // {
+            //     tria_CommandPacket zero = tria_CommandPacket_init_zero;
+            //     command = zero;
+            // }
 
 
             // 送信処理を行う
@@ -84,6 +86,7 @@ void udp_task(void)
             int send_size = encode_sensor_packet(send_buffer, sensor);
             if(send_size > 0)
             {
+                send_buffer[send_size] = '\0';
                 // データ変換に成功した場合
                 int send_result = send_w6300_udp(socket_num, send_buffer, send_size, dest_ip, dest_port);
 

@@ -1,19 +1,19 @@
 <launch>
     <!-- 上下機構パラメータ -->
-    <arg name="vertical.pos.p_gain" default="1.0"/>
+    <arg name="vertical.pos.p_gain" default="1000.0"/>
     <arg name="vertical.pos.i_gain" default="0.0"/>
     <arg name="vertical.pos.d_gain" default="0.0"/>
     <arg name="vertical.pos.max_output" default="1000.0"/>
     <arg name="vertical.pos.max_integral" default="1000.0"/>
 
-    <arg name="vertical.vel.p_gain" default="1.0"/>
+    <arg name="vertical.vel.p_gain" default="100.0"/>
     <arg name="vertical.vel.i_gain" default="0.0"/>
     <arg name="vertical.vel.d_gain" default="0.0"/>
     <arg name="vertical.vel.max_output" default="1000.0"/>
     <arg name="vertical.vel.max_integral" default="1000.0"/>
 
     <!-- 水平移動機構パラメータ -->
-    <arg name="horizontal.pos.p_gain" default="1.0"/>
+    <arg name="horizontal.pos.p_gain" default="1000.0"/>
     <arg name="horizontal.pos.i_gain" default="0.0"/>
     <arg name="horizontal.pos.d_gain" default="0.0"/>
     <arg name="horizontal.pos.max_output" default="1000.0"/>
@@ -26,13 +26,13 @@
     <arg name="horizontal.vel.max_integral" default="1000.0"/>
 
     <!-- ハンド機構パラメータ -->
-    <arg name="hand.pos.p_gain" default="1.0"/>
+    <arg name="hand.pos.p_gain" default="10.0"/>
     <arg name="hand.pos.i_gain" default="0.0"/>
     <arg name="hand.pos.d_gain" default="0.0"/>
     <arg name="hand.pos.max_output" default="1000.0"/>
     <arg name="hand.pos.max_integral" default="1000.0"/>
 
-    <arg name="hand.vel.p_gain" default="1.0"/>
+    <arg name="hand.vel.p_gain" default="10.0"/>
     <arg name="hand.vel.i_gain" default="0.0"/>
     <arg name="hand.vel.d_gain" default="0.0"/>
     <arg name="hand.vel.max_output" default="1000.0"/>

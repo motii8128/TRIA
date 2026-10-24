@@ -94,12 +94,13 @@ namespace device_communicator
         // 受信したメッセージから送信するパケットを作成
         const auto command_packet = create_command_packet();
 
-        uint8_t send_buffer[64];
-        command_packet.SerializeToArray(send_buffer, 64);
+        // uint8_t send_buffer[64];
+        std::string send_buffer;
+        command_packet.SerializeToString(&send_buffer);
 
-        const auto send_result = udp_->send(send_buffer, 64, dest_addr_, dest_port_);
+        const auto send_result = udp_->send(send_buffer.c_str(), send_buffer.size(), dest_addr_, dest_port_);
 
-        if(send_result == UDP_STATE::OK_UDP)
+        if(true)
         {
             // 送信成功したら受信処理
             uint8_t recv_buffer[50];

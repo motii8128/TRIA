@@ -39,6 +39,10 @@ int main()
         .data = {0,0,0,0,0,0,0,0}
     };
 
+    RoboMasterSensor rm1 = hp_sensor_init();
+    RoboMasterSensor rm2 = hp_sensor_init();
+    RoboMasterSensor rm3 = hp_sensor_init();
+
     tria_CommandPacket command = tria_CommandPacket_init_default;
     tria_SensorPacket sensor = tria_SensorPacket_init_default;
     bool udp_initialized = false;
@@ -57,9 +61,16 @@ int main()
 
         gpio_put(PICO_DEFAULT_LED_PIN, udp_initialized);
 
-        int16_t tmp = command.hand_motor;
+        int16_t tmp = command.horizontal_motor;
         can_send_msg.data[0] = (tmp >> 8) & 0xFF;
         can_send_msg.data[1] = tmp & 0xFF;
+        tmp = command.vertical_motor;
+        can_send_msg.data[2] = (tmp >> 8) & 0xFF;
+        can_send_msg.data[3] = tmp & 0xFF;
+        tmp = command.hand_motor;
+        can_send_msg.data[4] = (tmp >> 8) & 0xFF;
+        can_send_msg.data[5] = tmp & 0xFF;
+
 
         absolute_time_t now = get_absolute_time();
         // 前回実行時からの経過時間（マイクロ秒）を計算
@@ -67,6 +78,7 @@ int main()
 
         if(diff_us >= 20000)
         {
+            printf("%d\n", command.hand_motor);
             if(can_transmit(can_send_msg))
             {
                 gpio_put(2, true);
@@ -82,16 +94,34 @@ int main()
         struct can2040_msg can_recv_msg;
         if(can_receive(&can_recv_msg))
         {
-            RoboMasterSensor rm = hp_sensor_init();
-            hp_parse_CANMessage(can_recv_msg.data, &rm);
+            if(can_recv_msg.id == 0x201)
+            {
+                hp_parse_CANMessage(can_recv_msg.data, &rm1);
+                sensor.can_id = can_recv_msg.id - 0x200;
+                sensor.angle = rm1.position * 100;
+                sensor.velocity = rm1.velocity;
+                sensor.torque = rm1.torque;
+            }
+            if(can_recv_msg.id == 0x202)
+            {
+                hp_parse_CANMessage(can_recv_msg.data, &rm2);
+                sensor.can_id = can_recv_msg.id - 0x200;
+                sensor.angle = rm2.position * 100;
+                sensor.velocity = rm2.velocity;
+                sensor.torque = rm2.torque;
+            }
+            if(can_recv_msg.id == 0x203)
+            {
+                hp_parse_CANMessage(can_recv_msg.data, &rm3);
+                sensor.can_id = can_recv_msg.id - 0x200;
+                sensor.angle = rm3.position * 100;
+                sensor.velocity = rm3.velocity;
+                sensor.torque = rm3.torque;
+            }
 
             gpio_put(3, true);
 
             // CAN受信キューにデータがある場合
-            sensor.can_id = can_recv_msg.id - 0x200;
-            sensor.angle = rm.angle;
-            sensor.velocity = rm.velocity;
-            sensor.torque = rm.torque;
         }
         else
         {

@@ -1,10 +1,10 @@
 <launch>
-  <arg name="vertical_position_max" default="10.0"/>
-  <arg name="vertical_position_min" default="0.0"/>
-  <arg name="horizontal_position_max" default="10.0"/>
-  <arg name="horizontal_position_min" default="0.0"/>
-  <arg name="hand_position_max" default="10.0"/>
-  <arg name="hand_position_min" default="0.0"/>
+  <arg name="vertical_position_max" default="0.0"/>
+  <arg name="vertical_position_min" default="-1.55"/>
+  <arg name="horizontal_position_max" default="0.0"/>
+  <arg name="horizontal_position_min" default="-1.8"/>
+  <arg name="hand_position_max" default="0.0"/>
+  <arg name="hand_position_min" default="-0.25"/>
   
   
 
