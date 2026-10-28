@@ -11,7 +11,7 @@ subgraph software
 micro_controller_connector <==>|UDP| micro_controller
 wheel_controller ==> micro_controller_connector
 machine_controller ==> micro_controller_connector
-tria_auto_planner ==> wheel_controller
-tria_auto_planner ==> machine_controller
+tria_auto_core ==> wheel_controller
+tria_auto_core ==> machine_controller
 end
 ```
