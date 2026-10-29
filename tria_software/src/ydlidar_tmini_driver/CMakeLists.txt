@@ -12,17 +12,17 @@ target_include_directories(ydlidar_tmini
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
 )
 
-add_executable(single_tmini_driver src/single_tmini_driver.cpp)
+add_executable(tmini_driver src/tmini_driver.cpp)
 
-target_include_directories(single_tmini_driver
+target_include_directories(tmini_driver
   SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
 )
-target_link_libraries(single_tmini_driver ydlidar_tmini)
-ament_target_dependencies(single_tmini_driver rclcpp sensor_msgs)
+target_link_libraries(tmini_driver ydlidar_tmini)
+ament_target_dependencies(tmini_driver rclcpp sensor_msgs)
 
 install(TARGETS
-  single_tmini_driver
+  tmini_driver
   DESTINATION lib/${PROJECT_NAME}
 )
 
