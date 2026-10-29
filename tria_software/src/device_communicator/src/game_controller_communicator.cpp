@@ -32,13 +32,11 @@ namespace device_communicator
 
     void GameControllerCommunicator::joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
     {
-        const auto x_axis = 1.0 * msg->axes[7];
-        const auto y_axis = -1.0 * msg->axes[6];
+        const auto x_axis = msg->axes[7];
 
         const auto cc = msg->buttons[1] - msg->buttons[0];
         
         machine_control_msg_.horizontal_position += x_axis;
-        machine_control_msg_.vertical_position += y_axis;
 
         if(cc > 0)
         {
@@ -49,21 +47,14 @@ namespace device_communicator
             machine_control_msg_.hand_position = hand_min_position_;
         }
 
-        if(machine_control_msg_.horizontal_position > horizontal_max_position_)
+        if(x_axis > 0.0)
         {
             machine_control_msg_.horizontal_position = horizontal_max_position_;
-        }
-        if(machine_control_msg_.horizontal_position < horizontal_min_position_)
-        {
-            machine_control_msg_.horizontal_position = horizontal_min_position_;
-        }
-
-        if(machine_control_msg_.vertical_position > vertical_max_position_)
-        {
             machine_control_msg_.vertical_position = vertical_max_position_;
         }
-        if(machine_control_msg_.vertical_position < vertical_min_position_)
+        else if(x_axis < 0.0)
         {
+            machine_control_msg_.horizontal_position = horizontal_min_position_;
             machine_control_msg_.vertical_position = vertical_min_position_;
         }
 
