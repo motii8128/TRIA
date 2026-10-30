@@ -1,8 +1,8 @@
 <launch>
   <arg name="body_radius" default="0.3"/>
-  <arg name="wheel1_angle" default="300.0"/>
-  <arg name="wheel2_angle" default="60.0"/>
-  <arg name="wheel3_angle" default="180.0"/>
+  <arg name="wheel1_angle" default="120.0"/>
+  <arg name="wheel2_angle" default="240.0"/>
+  <arg name="wheel3_angle" default="0.0"/>
   <arg name="max_speed" default="1.0"/>
 
 

@@ -22,9 +22,6 @@
 
 
     <!-- トピックのremap -->
-    <remap from="/ccb/machine_current" to="/ccb/machine_current"/>
-    <remap from="/ccb/wheel_duty" to="/ccb/wheel_duty"/>
-    <remap from="/ccb/sensor_feedback" to="/ccb/sensor_feedback"/>
   </node>
 
 </launch>

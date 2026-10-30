@@ -3,7 +3,7 @@
     <arg name="vertical.pos.p_gain" default="12000.0"/>
     <arg name="vertical.pos.i_gain" default="0.0"/>
     <arg name="vertical.pos.d_gain" default="0.0"/>
-    <arg name="vertical.pos.max_output" default="12000.0"/>
+    <arg name="vertical.pos.max_output" default="7000.0"/>
     <arg name="vertical.pos.max_integral" default="1000.0"/>
 
     <arg name="vertical.vel.p_gain" default="0.25"/>
@@ -19,7 +19,7 @@
     <arg name="horizontal.pos.max_output" default="12000.0"/>
     <arg name="horizontal.pos.max_integral" default="1000.0"/>
 
-    <arg name="horizontal.vel.p_gain" default="0.25"/>
+    <arg name="horizontal.vel.p_gain" default="0.3"/>
     <arg name="horizontal.vel.i_gain" default="0.0"/>
     <arg name="horizontal.vel.d_gain" default="0.001"/>
     <arg name="horizontal.vel.max_output" default="8000.0"/>
