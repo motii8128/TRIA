@@ -1,0 +1,7 @@
+<launch>
+  <!-- YD LiDARドライバ -->
+  <include file="$(find-pkg-share tria_launch)/launch/ydlidar_tmini_driver/tmini_driver.launch.xml" />
+  <!-- ２つの点群を統合するやつ -->
+  <include file="$(find-pkg-share tria_launch)/launch/ydlidar_tmini_driver/tmini_merger_node.launch.xml" />
+
+</launch>

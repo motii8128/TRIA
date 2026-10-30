@@ -1,0 +1,35 @@
+<launch>
+  <!-- ================= 点群の統合 ================= -->
+  <node pkg="ydlidar_tmini_ros2" exec="tmini_merge_node" output="screen">
+    <!-- 統合後の点群のフレーム。各センサの取り付け姿勢はこのフレームから見た値で与える。 -->
+    <param name="target_frame" value="base_link"/>
+    <param name="publish_rate_hz" value="10.0"/>
+    <!-- これより古い scan は統合に使わない [s]。センサが止まっても生きている側で出力を続ける。 -->
+    <param name="max_age_s" value="0.25"/>
+
+    <!-- 統合するセンサ名 (カンマ区切り)。下の「センサ名.項目」のパラメータと対応する。 -->
+    <param name="sensors" value="[plus,pro]"/>
+
+    <!-- 姿勢の規約 (URDF の rpy と同じ)
+           x, y, z    : target_frame から見たセンサ原点の位置 [m]
+           yaw_deg    : z 軸まわり。正で反時計回り (上から見て)
+           pitch_deg  : y 軸まわり。正でセンサの 0 度方向が下を向く (前下がり)
+           roll_deg   : x 軸まわり。正でセンサの左側が上がる
+           回転の合成は R = Rz(yaw) * Ry(pitch) * Rx(roll) -->
+    <param name="plus.topic" value="tmini_plus/scan"/>
+    <param name="plus.x" value="0.10"/>
+    <param name="plus.y" value="0.00"/>
+    <param name="plus.z" value="0.20"/>
+    <param name="plus.roll_deg" value="0.0"/>
+    <param name="plus.pitch_deg" value="0.0"/>
+    <param name="plus.yaw_deg" value="0.0"/>
+
+    <param name="pro.topic" value="tmini_pro/scan"/>
+    <param name="pro.x" value="-0.10"/>
+    <param name="pro.y" value="0.00"/>
+    <param name="pro.z" value="0.20"/>
+    <param name="pro.roll_deg" value="0.0"/>
+    <param name="pro.pitch_deg" value="0.0"/>
+    <param name="pro.yaw_deg" value="180.0"/>
+  </node>
+</launch>

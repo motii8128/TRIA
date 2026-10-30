@@ -21,8 +21,16 @@ target_include_directories(tmini_driver
 target_link_libraries(tmini_driver ydlidar_tmini)
 ament_target_dependencies(tmini_driver rclcpp sensor_msgs)
 
+add_executable(tmini_merge_node src/scan_merger_node.cpp)
+target_include_directories(tmini_merge_node
+  SYSTEM PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+)
+ament_target_dependencies(tmini_merge_node rclcpp sensor_msgs)
+
 install(TARGETS
   tmini_driver
+  tmini_merge_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

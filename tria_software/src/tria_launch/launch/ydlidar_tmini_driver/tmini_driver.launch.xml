@@ -1,0 +1,35 @@
+<launch>
+    <node pkg="ydlidar_tmini_driver" exec="tmini_driver" output="screen">
+
+    <param name="ports" value="[/dev/ttyUSB0,/dev/ttyUSB1]"/>
+
+    <param name="scan_frequency_hz" value="10.0"/>
+
+    <!-- LaserScan のビン刻み [deg] (両機種共通)。1 周の点数 (4000 / 回転周波数) より粗くすること。
+         10 Hz なら 1.0 (360 ビン)、12 Hz なら 1.2 (300 ビン) を推奨。 -->
+    <param name="angle_increment_deg" value="1.0"/>
+    <param name="range_min" value="0.05"/>
+    <param name="range_max" value="12.0"/>
+    <param name="publish_intensity" value="true"/>
+
+    <!-- 通信エラー時の再接続間隔 [s] -->
+    <param name="retry_interval_s" value="2.0"/>
+
+    <!-- T-mini Plus: model 番号は実機で 151 を確認済み -->
+    <param name="plus_model" value="151"/>
+    <param name="plus_topic" value="tmini_plus/scan"/>
+    <param name="plus_frame_id" value="tmini_plus_laser_frame"/>
+    <!-- 向きの補正は統合ノード側 (yaw_deg) に一本化するので、ここは 0.0 のままにする -->
+    <param name="plus_angle_offset_deg" value="0.0"/>
+    <!-- flag 2 と 3 の点を除外する (Plus のマニュアルに基づく) -->
+    <param name="plus_drop_interference" value="false"/>
+
+    <!-- T-mini Pro: model 番号は未確認のため -1 (未設定)。
+         起動後のログに「model N is not mapped ...」と出るので、その N をここに設定する。 -->
+    <param name="pro_model" value="-1"/>
+    <param name="pro_topic" value="tmini_pro/scan"/>
+    <param name="pro_frame_id" value="tmini_pro_laser_frame"/>
+    <param name="pro_angle_offset_deg" value="0.0"/>
+  </node>
+
+</launch>
