@@ -3,12 +3,12 @@
     <arg name="vertical.pos.p_gain" default="12000.0"/>
     <arg name="vertical.pos.i_gain" default="0.0"/>
     <arg name="vertical.pos.d_gain" default="0.0"/>
-    <arg name="vertical.pos.max_output" default="18000.0"/>
+    <arg name="vertical.pos.max_output" default="12000.0"/>
     <arg name="vertical.pos.max_integral" default="1000.0"/>
 
-    <arg name="vertical.vel.p_gain" default="0.31"/>
+    <arg name="vertical.vel.p_gain" default="0.25"/>
     <arg name="vertical.vel.i_gain" default="0.0"/>
-    <arg name="vertical.vel.d_gain" default="0.0001"/>
+    <arg name="vertical.vel.d_gain" default="0.001"/>
     <arg name="vertical.vel.max_output" default="8000.0"/>
     <arg name="vertical.vel.max_integral" default="1000.0"/>
 
@@ -16,12 +16,12 @@
     <arg name="horizontal.pos.p_gain" default="12000.0"/>
     <arg name="horizontal.pos.i_gain" default="0.0"/>
     <arg name="horizontal.pos.d_gain" default="0.0"/>
-    <arg name="horizontal.pos.max_output" default="18000.0"/>
+    <arg name="horizontal.pos.max_output" default="12000.0"/>
     <arg name="horizontal.pos.max_integral" default="1000.0"/>
 
-    <arg name="horizontal.vel.p_gain" default="0.35"/>
+    <arg name="horizontal.vel.p_gain" default="0.25"/>
     <arg name="horizontal.vel.i_gain" default="0.0"/>
-    <arg name="horizontal.vel.d_gain" default="0.0001"/>
+    <arg name="horizontal.vel.d_gain" default="0.001"/>
     <arg name="horizontal.vel.max_output" default="8000.0"/>
     <arg name="horizontal.vel.max_integral" default="1000.0"/>
 
@@ -29,10 +29,10 @@
     <arg name="hand.pos.p_gain" default="12000.0"/>
     <arg name="hand.pos.i_gain" default="0.0"/>
     <arg name="hand.pos.d_gain" default="0.0"/>
-    <arg name="hand.pos.max_output" default="5000.0"/>
+    <arg name="hand.pos.max_output" default="7000.0"/>
     <arg name="hand.pos.max_integral" default="1000.0"/>
 
-    <arg name="hand.vel.p_gain" default="0.3"/>
+    <arg name="hand.vel.p_gain" default="0.33"/>
     <arg name="hand.vel.i_gain" default="0.0"/>
     <arg name="hand.vel.d_gain" default="0.0001"/>
     <arg name="hand.vel.max_output" default="8000.0"/>
