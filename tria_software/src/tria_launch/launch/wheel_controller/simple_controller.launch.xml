@@ -1,5 +1,5 @@
 <launch>
-  <arg name="body_radius" default="0.3"/>
+  <arg name="body_radius" default="0.51"/>
   <arg name="wheel1_angle" default="120.0"/>
   <arg name="wheel2_angle" default="240.0"/>
   <arg name="wheel3_angle" default="0.0"/>
