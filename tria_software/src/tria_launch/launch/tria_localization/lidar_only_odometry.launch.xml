@@ -2,6 +2,7 @@
   <arg name="max_iter" default="20"/>
   <arg name="tol" default="0.001"/>
   <arg name="search_radius" default="0.3"/>
+  <arg name="neighbor_threshold" default="0.3"/>
 
   <!-- ノードの起動 -->
   <node pkg="tria_localization" exec="lidar_only_odometer" output="screen">
@@ -9,6 +10,7 @@
     <param name="max_iteration" value="$(var max_iter)"/>
     <param name="tolerance" value="$(var tol)"/>
     <param name="search_radius" value="$(var search_radius)"/>
+    <param name="neighbor_threshold" value="$(var neighbor_threshold)"/>
 
     <!-- トピックのremap -->
     <remap from="/merged_points" to="/merged_points"/>
