@@ -5,7 +5,9 @@ project(device_communicator)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tria_msgs REQUIRED)
+find_package(tria_auto_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(Protobuf REQUIRED)
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS proto/tria.proto)
@@ -40,9 +42,19 @@ target_include_directories(game_controller_communicator
 )
 ament_target_dependencies(game_controller_communicator rclcpp tria_msgs sensor_msgs)
 
+# GameControllerCommunicator
+add_executable(web_ui_connector src/web_ui_connector.cpp)
+
+target_include_directories(web_ui_connector
+  SYSTEM PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+)
+ament_target_dependencies(web_ui_connector rclcpp tria_auto_msgs std_msgs)
+
 install(TARGETS
   ccb_communicator
   game_controller_communicator
+  web_ui_connector
   DESTINATION lib/${PROJECT_NAME}
 )
 

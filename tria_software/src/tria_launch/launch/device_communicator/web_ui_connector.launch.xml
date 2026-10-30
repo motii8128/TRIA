@@ -1,0 +1,13 @@
+<launch>
+  <!-- ノードの起動 -->
+  <node pkg="device_communicator" exec="web_ui_connector" output="screen">
+
+    <!-- トピックのremap -->
+    <remap from="/task" to="/task"/>
+    <remap from="/web/command" to="/web_ui/command"/>
+  </node>
+
+  <executable cmd="npm run dev" cwd="/home/motii/TRIA/tria_software/tria-web" output="screen" />
+  <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
+
+</launch>
