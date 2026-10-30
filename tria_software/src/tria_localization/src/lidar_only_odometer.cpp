@@ -4,11 +4,10 @@ namespace tria_localization
 {
     LidarOnlyOdometer::LidarOnlyOdometer() : Node("lidar_only_odometer")
     {
-        const auto max_iter = this->declare_parameter("max_iteration", 20);
-        const auto tol = this->declare_parameter("tolerance", 0.001);
-        const auto radi = this->declare_parameter("search_radius", 0.3);
-
-        icp_ = std::make_shared<IterativeClosestPoint>(max_iter, radi, tol);
+        max_iteration_ = this->declare_parameter("max_iteration", 20);
+        tolerance_ = this->declare_parameter("tolerance", 0.001);
+        radius_search_ = this->declare_parameter("search_radius", 0.3);
+        neighbor_threshold_ = this->declare_parameter("neighbor_threshold", 0.3);
 
         tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
@@ -25,6 +24,9 @@ namespace tria_localization
         RCLCPP_INFO(this->get_logger(), "LidarOnlyOdometerが初期化されました");
 
         prev_points_ = Points(0);
+        x_ = 0.0;
+        y_ = 0.0;
+        yaw_ = 0.0;
     }
 
     void LidarOnlyOdometer::pointcloud_callback(const sensor_msgs::msg::PointCloud::SharedPtr msg)
@@ -32,9 +34,12 @@ namespace tria_localization
         Points new_points;
         for(const auto& p : msg->points)
         {
-            new_points.emplace_back(
-                Point{p.x, p.y}
-            );
+            if(std::isfinite(p.x) && std::isfinite(p.y))
+            {
+                new_points.emplace_back(
+                    Point{p.x, p.y}
+                );
+            }
         }
 
         if(prev_points_.empty())
@@ -43,13 +48,23 @@ namespace tria_localization
             return;
         }
 
-        icp_->compute(new_points, prev_points_);
+        IterativeClosestPoint icp(max_iteration_, radius_search_, tolerance_, neighbor_threshold_);
 
-        const auto t = icp_->get_translation();
-        const auto yaw = icp_->get_yaw();
+        icp.compute(new_points, prev_points_);
+        prev_points_ = new_points;
+
+        const auto t = icp.get_translation();
+        const auto yaw = icp.get_yaw();
+
+        if(std::isfinite(t[0]) && std::isfinite(t[1]) && std::isfinite(yaw))
+        {
+            x_   += std::cos(yaw_) * t[0] - std::sin(yaw_) * t[1];
+            y_   += std::sin(yaw_) * t[0] + std::cos(yaw_) * t[1];
+            yaw_ += yaw;   // 必要なら [-π, π] に正規化
+        }
 
         tf2::Quaternion q;
-        q.setEuler(yaw, 0.0, 0.0);
+        q.setEuler(yaw_, 0.0, 0.0);
 
         auto transform_stamped = geometry_msgs::msg::TransformStamped();
         auto odom_msg = nav_msgs::msg::Odometry();
@@ -61,16 +76,16 @@ namespace tria_localization
         odom_msg.header = transform_stamped.header;
         odom_msg.child_frame_id = transform_stamped.child_frame_id;
 
-        transform_stamped.transform.translation.x = t[0];
-        transform_stamped.transform.translation.y = t[1];
+        transform_stamped.transform.translation.x = x_;
+        transform_stamped.transform.translation.y = y_;
 
         transform_stamped.transform.rotation.w = q.w();
         transform_stamped.transform.rotation.x = q.x();
         transform_stamped.transform.rotation.y = q.y();
         transform_stamped.transform.rotation.z = q.z();
 
-        odom_msg.pose.pose.position.x = t[0];
-        odom_msg.pose.pose.position.y = t[1];
+        odom_msg.pose.pose.position.x = x_;
+        odom_msg.pose.pose.position.y = y_;
         odom_msg.pose.pose.orientation = transform_stamped.transform.rotation;
 
         tf_broadcaster_->sendTransform(transform_stamped);

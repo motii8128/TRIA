@@ -1,0 +1,4 @@
+<launch>
+    <!-- base_linkから上昇機構 -->
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_vertical_link" args="0 0 0 0 0 0 0 base_link vertical_link" output="log"/>
+</launch>

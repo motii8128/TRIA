@@ -23,7 +23,12 @@ namespace tria_localization
         rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_publisher_;
         rclcpp::Subscription<sensor_msgs::msg::PointCloud>::SharedPtr pointcloud_subscriber_;
 
-        std::shared_ptr<IterativeClosestPoint> icp_;
+        int max_iteration_;
+        double tolerance_;
+        double radius_search_;
+        double neighbor_threshold_;
+
+        double x_, y_, yaw_;
 
         Points prev_points_;
     };

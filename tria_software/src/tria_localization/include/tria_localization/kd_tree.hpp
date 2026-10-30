@@ -42,14 +42,14 @@ namespace tria_localization
             root_ = build(points, nodes_, 0);
         }
 
-        void nearest_point(const Point& target_point, Point* best_point, float* best_distance)
+        void nearest_point(const Point& target_point, Point* best_point, double* best_distance)
         {
-            *best_distance = std::numeric_limits<float>::max();
+            *best_distance = std::numeric_limits<double>::max();
             
             nearest_point_rec(root_, target_point, best_point, best_distance);
         }
 
-        std::vector<Point> radius_search(const Point& target, float radius)
+        std::vector<Point> radius_search(const Point& target, double radius)
         {
             std::vector<Point> result;
 
@@ -111,7 +111,7 @@ namespace tria_localization
             return node_index;
         }
 
-        void nearest_point_rec(size_t node_index, const Point& target, Point* best_point, float* best_distance)
+        void nearest_point_rec(size_t node_index, const Point& target, Point* best_point, double* best_distance)
         {
             if(node_index == NONE) return;
 

@@ -8,41 +8,36 @@
 
 namespace tria_localization
 {
-    struct TargetPoint
-    {
-        Point point;
-        Point normal_vec;
-
-        TargetPoint() = default;
-    };
-
     /// @brief 点と線を対応させるICP。ガウス・ニュートン法を用いて最小二乗法を解く
     class IterativeClosestPoint
     {
         public:
-        IterativeClosestPoint() = default;
-
-        IterativeClosestPoint(int max_iteration, float search_radius, float tolerance)
-        :max_iter_(max_iteration),radius_for_search_(search_radius),tolerance_(tolerance)
+        IterativeClosestPoint(int max_iteration, double search_radius, double tolerance, double neighbor_threshold)
+        :max_iter_(max_iteration),radius_for_search_(search_radius),tolerance_(tolerance),neighbor_threshold_(neighbor_threshold)
         {
+            translation_ = {0.0, 0.0};
+            yaw_ = 0.0;
+        }
 
+        void set_pose(double x, double y, double yaw)
+        {
+            translation_ = {x, y};
+            yaw_ = yaw;
         }
 
         void compute(Points& source_points, Points& target_points)
         {
-            auto prev_error = std::numeric_limits<float>::max();
+            KdTree kdtree(target_points);
 
             for(int iter = 0; iter < max_iter_; iter++)
             {
-                bool result = step(source_points, target_points);
+                const double x0 = translation_[0], y0 = translation_[1], t0 = yaw_;
+                bool result = step(source_points, kdtree);
 
                 if(!result) break;
 
-                if(abs(prev_error - error_) < tolerance_)
-                {
-                    break;
-                }
-                prev_error = error_;
+                const double d = std::abs(translation_[0]-x0) + std::abs(translation_[1]-y0) + std::abs(yaw_-t0);
+                if(d < tolerance_) break;
             }
         }
 
@@ -51,7 +46,7 @@ namespace tria_localization
             return translation_;
         }
 
-        float get_yaw()
+        double get_yaw()
         {
             return yaw_;
         }
@@ -59,13 +54,11 @@ namespace tria_localization
         private:
         int max_iter_;
         Point translation_;
-        float yaw_, error_;
-        float radius_for_search_, tolerance_;
+        double yaw_;
+        double radius_for_search_, tolerance_, neighbor_threshold_;
         // ICPの１ステップ
-        bool step(Points& source_points, Points& target_points)
+        bool step(Points& source_points, KdTree& kdtree)
         {
-            size_t src_num = source_points.size();
-
             const auto cos_yaw = cos(yaw_);
             const auto sin_yaw = sin(yaw_);
             const auto tx = translation_[0];
@@ -73,14 +66,12 @@ namespace tria_localization
 
             // ヘッセ行列
             // 実対称行列
-            float H00, H01, H02 = 0.0f;
-            float      H11, H12 = 0.0f;
-            float           H22 = 0.0f;
+            auto H00 = 0.0f, H01 = 0.0f, H02 = 0.0f;
+            auto             H11 = 0.0f, H12 = 0.0f;
+            auto                         H22 = 0.0f;
 
             // 右辺のベクトル
-            float g0, g1, g2 = 0.0f;
-
-            KdTree kdtree(target_points);
+            auto g0 = 0.0f, g1 = 0.0f, g2 = 0.0f;
 
             auto valid_num = 0;
 
@@ -93,8 +84,10 @@ namespace tria_localization
                 };
 
                 Point nearest;
-                float distance_squared;
+                double distance_squared;
                 kdtree.nearest_point(translated_src, &nearest, &distance_squared);
+
+                if(distance_squared > neighbor_threshold_ * neighbor_threshold_) continue;
 
                 const auto neighbors = kdtree.radius_search(nearest, radius_for_search_);    
                 
@@ -142,7 +135,6 @@ namespace tria_localization
                 g1 += -err * J_x;
                 g2 += -err * J_y;
 
-                error_ += err * err;
                 valid_num++;
             }
 
@@ -151,7 +143,7 @@ namespace tria_localization
             // ヘッセ行列Hの逆行列を求める
             // Hの行列式(余因子展開して計算)
             const auto H_det = H00 * (H11 * H22 - H12 * H12) + H01 * (- H01 * H22 + H12 * H02) + H02 * (H01 * H12 - H11 * H02);
-            if (abs(H_det) < 1e-9) return false;
+            if (std::abs(H_det) < 1e-9) return false;
 
             const auto inv_H_det = 1.0f / H_det;
 
@@ -179,20 +171,20 @@ namespace tria_localization
             const auto size = points.size();
 
             //　点群の重心を計算
-            Point centroid;
+            Point centroid{0.0, 0.0};
             for(const auto& point : points)
             {
                 centroid[0] += point[0];
                 centroid[1] += point[1];
             }
-            centroid[0] /= (float)size;
-            centroid[1] /= (float)size;
+            centroid[0] /= (double)size;
+            centroid[1] /= (double)size;
 
             // 点群の共分散行列を求める
             // |m00 m10|
             // |m10 m11|
             // この行列は必ず実対称行列になるので０行１列目の成分は計算する必要がない
-            float m00, m10, m11 = 0.0;
+            double m00=0.0, m10=0.0, m11 = 0.0;
             Point diff;
             for(const auto& point : points)
             {
@@ -219,25 +211,25 @@ namespace tria_localization
 
             if(discriminant < 0.0f) discriminant = 0.0f;
 
-            float sqrt_disc = std::sqrt(discriminant);
+            double sqrt_disc = std::sqrt(discriminant);
 
             // ２つの固有値のうち、小さい方を求める
             // ２次方程式の解の公式
-            float lambda_min = 0.5f * (trace - sqrt_disc);
+            double lambda_min = 0.5f * (trace - sqrt_disc);
 
             // 対応する固有ベクトルを求める
             auto nx = -m10;
             auto ny = m00 - lambda_min;
 
             // 例外処理
-            if(abs(nx) < 1e-6 && abs(ny) < 1e-6)
+            if(std::abs(nx) < 1e-6 && std::abs(ny) < 1e-6)
             {
                 nx = 1.0f;
                 ny = 0.0f;
             }
 
             // 正規化する
-            float norm = std::sqrt(nx * nx + ny * ny);
+            double norm = std::sqrt(nx * nx + ny * ny);
             if (norm > 1e-6f) 
             {
                 nx /= norm;
