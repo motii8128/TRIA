@@ -11,7 +11,6 @@ namespace tria_localization
 
     using Points = std::vector<Point>;
 
-    using Mat2 = std::array<Point, 2>;
 }
 
 #endif

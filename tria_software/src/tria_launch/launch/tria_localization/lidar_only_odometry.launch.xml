@@ -1,0 +1,18 @@
+<launch>
+  <arg name="max_iter" default="20"/>
+  <arg name="tol" default="0.001"/>
+  <arg name="search_radius" default="0.3"/>
+
+  <!-- ノードの起動 -->
+  <node pkg="tria_localization" exec="lidar_only_odometer" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="max_iteration" value="$(var max_iter)"/>
+    <param name="tolerance" value="$(var tol)"/>
+    <param name="search_radius" value="$(var search_radius)"/>
+
+    <!-- トピックのremap -->
+    <remap from="/merged_points" to="/merged_points"/>
+    <remap from="/odom" to="/odom"/>
+  </node>
+
+</launch>

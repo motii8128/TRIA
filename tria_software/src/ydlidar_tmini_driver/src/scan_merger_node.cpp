@@ -65,7 +65,7 @@ public:
             RCLCPP_ERROR(get_logger(), "parameter `sensors` is empty; nothing to merge");
         }
 
-        pub_ = create_publisher<sensor_msgs::msg::PointCloud>("merged_points",
+        pub_ = create_publisher<sensor_msgs::msg::PointCloud>("/merged_points",
                                                                rclcpp::SensorDataQoS().reliable());
         timer_ = create_wall_timer(std::chrono::duration<double>(1.0 / rate),
                                    [this] { publishMerged(); });
