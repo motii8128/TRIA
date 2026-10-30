@@ -39,6 +39,12 @@ int main()
         .data = {0,0,0,0,0,0,0,0}
     };
 
+    struct can2040_msg md_send_msg = {
+        .id = 0x300,
+        .dlc = 8,
+        .data = {0,0,0,0,0,0,0,0}
+    };
+
     RoboMasterSensor rm1 = hp_sensor_init();
     RoboMasterSensor rm2 = hp_sensor_init();
     RoboMasterSensor rm3 = hp_sensor_init();
@@ -50,6 +56,9 @@ int main()
     multicore_launch_core1(udp_task);
 
     absolute_time_t last_time = get_absolute_time();
+
+    // これがtrueならrobomaster、falseならmdに対してCAN送信を行う
+    bool md_or_robomaster = true;
 
     while (true) 
     {   
@@ -71,24 +80,48 @@ int main()
         can_send_msg.data[4] = (tmp >> 8) & 0xFF;
         can_send_msg.data[5] = tmp & 0xFF;
 
+        tmp = command.wheel1;
+        md_send_msg.data[0] = (tmp >> 8) & 0xFF;
+        md_send_msg.data[1] = tmp & 0xFF;
+        tmp = command.wheel2;
+        md_send_msg.data[2] = (tmp >> 8) & 0xFF;
+        md_send_msg.data[3] = tmp & 0xFF;
+        tmp = command.wheel3;
+        md_send_msg.data[4] = (tmp >> 8) & 0xFF;
+        md_send_msg.data[5] = tmp & 0xFF;
+
 
         absolute_time_t now = get_absolute_time();
         // 前回実行時からの経過時間（マイクロ秒）を計算
         int64_t diff_us = absolute_time_diff_us(last_time, now);
 
-        if(diff_us >= 20000)
+        if(diff_us >= 10000)
         {
-            printf("%d\n", command.hand_motor);
-            if(can_transmit(can_send_msg))
+            if(md_or_robomaster)
             {
-                gpio_put(2, true);
+                if(can_transmit(can_send_msg))
+                {
+                    gpio_put(2, true);
+                }
+                else
+                {
+                    gpio_put(2, false);
+                }
             }
             else
             {
-                gpio_put(2, false);
+                if(can_transmit(md_send_msg))
+                {
+                    gpio_put(2, true);
+                }
+                else
+                {
+                    gpio_put(2, false);
+                }
             }
 
-            last_time = delayed_by_us(last_time, 20000);
+            md_or_robomaster = !md_or_robomaster;
+            last_time = delayed_by_us(last_time, 10000);
         }
         
         struct can2040_msg can_recv_msg;

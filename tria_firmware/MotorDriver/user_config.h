@@ -5,9 +5,9 @@
 #include "ws2812.h"
 
 // CAN通信設定
-#define CAN_ID 4
-#define CAN_TX_PIN 6
-#define CAN_RX_PIN 7
+#define CAN_ID 3
+#define CAN_TX_PIN 7
+#define CAN_RX_PIN 6
 #define CAN_BIT_RATE 1000000
 
 #define PWM1_PIN 4

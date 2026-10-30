@@ -51,10 +51,10 @@ void update_pwm_manager(PwmManager* manager, int duty)
 {
     static float x = 0.0;
 
-    bool sw1_state = gpio_get(manager->sw1_pin);
-    bool sw2_state = gpio_get(manager->sw2_pin);
+    bool sw1_state = false;/*gpio_get(manager->sw1_pin)*/
+    bool sw2_state = false;/*gpio_get(manager->sw2_pin)*/;
 
-    uint sw_duty = 300;
+    uint sw_duty = 0;
 
     if(sw1_state && !sw2_state) // SW1のみ押されている
     {
@@ -71,10 +71,12 @@ void update_pwm_manager(PwmManager* manager, int duty)
         if(duty > 0)
         {
             control_pwm(&manager->pwm1, duty);
+            control_pwm(&manager->pwm2, 0);
         }
         else if(duty < 0)
         {
-            control_pwm(&manager->pwm2, duty);
+            control_pwm(&manager->pwm2, -1*duty);
+            control_pwm(&manager->pwm1, 0);
         }
         else
         {
