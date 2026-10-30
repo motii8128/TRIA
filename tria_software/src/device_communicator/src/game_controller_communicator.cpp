@@ -23,6 +23,7 @@ namespace device_communicator
         );
 
         machine_control_publisher_ = this->create_publisher<tria_msgs::msg::MachineControl>("/machine_control", rclcpp::SystemDefaultsQoS());
+        twist_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::SystemDefaultsQoS());
 
         RCLCPP_INFO(this->get_logger(), "%sを初期化しました", this->get_name());
         RCLCPP_INFO(this->get_logger(), "上下移動機構：\tmax=%lf\tmin=%lf", vertical_max_position_, vertical_min_position_);
@@ -32,6 +33,13 @@ namespace device_communicator
 
     void GameControllerCommunicator::joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
     {
+        auto cmd = geometry_msgs::msg::Twist();
+        cmd.linear.x = -1.0* msg->axes[0];
+        cmd.linear.y = 1.0 * msg->axes[1];
+        cmd.angular.z =  msg->axes[3];
+
+        twist_publisher_->publish(cmd);
+
         const auto x_axis = msg->axes[7];
 
         const auto cc = msg->buttons[1] - msg->buttons[0];

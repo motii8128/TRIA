@@ -9,6 +9,7 @@ find_package(tria_auto_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(geometry_msgs)
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS proto/tria.proto)
 
@@ -40,7 +41,7 @@ target_include_directories(game_controller_communicator
   SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
 )
-ament_target_dependencies(game_controller_communicator rclcpp tria_msgs sensor_msgs)
+ament_target_dependencies(game_controller_communicator rclcpp tria_msgs sensor_msgs geometry_msgs)
 
 # GameControllerCommunicator
 add_executable(web_ui_connector src/web_ui_connector.cpp)

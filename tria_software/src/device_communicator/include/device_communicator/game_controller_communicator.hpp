@@ -3,7 +3,7 @@
 // ROS2 カスタムメッセージ
 #include <sensor_msgs/msg/joy.hpp>
 #include <tria_msgs/msg/machine_control.hpp>
-
+#include <geometry_msgs/msg/twist.hpp>
 
 namespace device_communicator
 {
@@ -17,6 +17,7 @@ namespace device_communicator
         private:
         rclcpp::TimerBase::SharedPtr timer_;
         rclcpp::Publisher<tria_msgs::msg::MachineControl>::SharedPtr machine_control_publisher_;
+        rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr twist_publisher_;
 
         rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_subscriber_;
 
