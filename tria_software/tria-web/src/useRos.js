@@ -4,7 +4,7 @@ import ROSLIB from "roslib";
 // ここを自分の環境に合わせて変更
 export const CONFIG = {
   mapTopic: "/map", // nav_msgs/msg/OccupancyGrid
-  poseTopic: "/amcl_pose", // PoseWithCovarianceStamped / Odometry / PoseStamped のどれでもOK
+  poseTopic: "/odom", // PoseWithCovarianceStamped / Odometry / PoseStamped のどれでもOK
   commandTopic: "/web_ui/command", // std_msgs/msg/String (JSON) を Publish
   mapFrame: "map",
 };
