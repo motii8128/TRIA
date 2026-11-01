@@ -1,0 +1,19 @@
+<launch>
+  <!-- ノードの起動 -->
+  <node pkg="tria_auto_core" exec="task_manager" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="udp_my_addr" value="$(var my_addr)"/>
+    <param name="udp_my_port" value="$(var my_port)"/>
+    <param name="udp_dest_addr" value="$(var dest_addr)"/>
+    <param name="udp_dest_port" value="$(var dest_port)"/>
+
+    <param name="udp_interval_ms" value="$(var interval_ms)"/>
+    <param name="udp_timeout_ms" value="$(var timeout_ms)"/>
+
+    <!-- トピックのremap -->
+    <remap from="/task" to="/task"/>
+    <remap from="/machine_control" to="/machine_control"/>
+    <remap from="/target_pose" to="/target_pose"/>
+    <remap from="/ccb/sensor_feedback" to="/ccb/sensor_feedback"/>
+  </node>
+</launch>
