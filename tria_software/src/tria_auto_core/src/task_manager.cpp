@@ -5,6 +5,17 @@ namespace tria_auto_core
     TaskManager::TaskManager() : Node("tria_auto_core")
     {
         // パラメータの取得
+        position_goal_threshold_ = this->declare_parameter("position_goal_threshold", 0.01);
+        arm_goal_threshold_ = this->declare_parameter("arm_goal_threshold", 0.01);
+        
+        collect_horizontal_pos_ = this->declare_parameter("collect_horizontal_pos", -1.8);
+        collect_vertical_pos_ = this->declare_parameter("collect_vertical_pos", -1.54);
+        enable_arm_distance_ = this->declare_parameter("enable_arm_distance", 0.3);
+
+        // ハンド系
+        hand_goal_threshold_ = this->declare_parameter("hand_goal_threshold", 0.01);
+        torque_threshold_ = this->declare_parameter("torque_threshold", 1000);
+        collect_hand_pos_ = this->declare_parameter("collect_hand_pos", -0.23);
 
         // 変数の初期化
         task_ = std::vector<tria_auto_msgs::msg::Task::SharedPtr>();
