@@ -1,6 +1,6 @@
 <launch>
   <!-- ================= 点群の統合 ================= -->
-  <node pkg="ydlidar_tmini_ros2" exec="tmini_merge_node" output="screen">
+  <node pkg="ydlidar_tmini_driver" exec="tmini_merge_node" output="screen">
     <!-- 統合後の点群のフレーム。各センサの取り付け姿勢はこのフレームから見た値で与える。 -->
     <param name="target_frame" value="base_link"/>
     <param name="publish_rate_hz" value="10.0"/>

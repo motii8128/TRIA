@@ -10,6 +10,9 @@
   <!-- 自動制御のタスク管理 -->
   <include file="$(find-pkg-share tria_launch)/launch/tria_auto_core/task_manager.launch.xml" />
 
+  <!-- 自己位置推定 -->
+  <include file="$(find-pkg-share tria_launch)/launch/tria_localization/lidar_only_odometry.launch.xml" /> 
+
   <!-- 機構のPID制御 -->
   <include file="$(find-pkg-share tria_launch)/launch/machine_controller/pid_controller.launch.xml" />
 
