@@ -61,7 +61,7 @@ namespace machine_controller
         hand_cascade_ = std::make_shared<CascadeController>(p_config, v_config);
         hand_pid_ = std::make_shared<PID>(v_config);
 
-        machine_control_ = nullptr;
+        sensor_feedback_ = nullptr;
 
         machine_current_publisher_ = this->create_publisher<tria_msgs::msg::MachineCurrent>("/ccb/machine_current", rclcpp::SystemDefaultsQoS());
 
@@ -85,60 +85,52 @@ namespace machine_controller
 
     void PidController::machine_control_callback(const tria_msgs::msg::MachineControl::SharedPtr msg)
     {
-        machine_control_ = msg;
-    }
+        // センサーの値が来てないなら制御を行わない
+        if(sensor_feedback_ == nullptr) return;
 
-    void PidController::sensor_feedback_callback(const tria_msgs::msg::SensorFeedback::SharedPtr msg)
-    {
         const auto now = this->get_clock()->now();
-        const auto dt = (now - last_time_).seconds();
-
-        if(machine_control_ == nullptr)
+        const auto dt = (now - last_time_).seconds();   
+        
+        if(msg->calibration)
         {
-            RCLCPP_WARN(this->get_logger(), "機構の目標値がありません");
-            RCLCPP_WARN(this->get_logger(), "原点を目標に位置制御されます");
-
-            zero_mode(msg, dt);
+            calibration_mode(msg, dt);
         }
         else
         {
-            if(machine_control_->calibration)
-            {
-                calibration_mode(msg, dt);
-            }
-            else
-            {
-                normal_mode(msg, dt);
-            }
+            normal_mode(msg, dt);
         }
-
 
         last_time_ = now;
     }
 
+    void PidController::sensor_feedback_callback(const tria_msgs::msg::SensorFeedback::SharedPtr msg)
+    {
+        sensor_feedback_ = msg;
+    }
+
     // 通常運行
-    void PidController::normal_mode(const tria_msgs::msg::SensorFeedback::SharedPtr msg, float dt)
+    void PidController::normal_mode(const tria_msgs::msg::MachineControl::SharedPtr msg, float dt)
     {
         auto machine_current = tria_msgs::msg::MachineCurrent();
 
         machine_current.vertical_motor = vertical_cascade_->compute(
-            machine_control_->vertical_position,
-            msg->vertical.position,
-            msg->vertical.rpm,
+            msg->vertical_position,
+            sensor_feedback_->vertical.position,
+            sensor_feedback_->vertical.rpm,
             dt
         );
 
         machine_current.horizontal_motor = horizontal_cascade_->compute(
-            machine_control_->horizontal_position,
-            msg->horizontal.position,
-            msg->horizontal.rpm,
+            msg->horizontal_position,
+            sensor_feedback_->horizontal.position,
+            sensor_feedback_->horizontal.rpm,
             dt
         );
 
         machine_current.hand_motor = hand_cascade_->compute(
-            machine_control_->hand_position,
-            msg->hand.position,
-            msg->hand.rpm,
+            msg->hand_position,
+            sensor_feedback_->hand.position,
+            sensor_feedback_->hand.rpm,
             dt
         );
 
@@ -146,34 +138,34 @@ namespace machine_controller
     }
 
     // キャリブレーション（仮）
-    void PidController::calibration_mode(const tria_msgs::msg::SensorFeedback::SharedPtr msg, float dt)
+    void PidController::calibration_mode(const tria_msgs::msg::MachineControl::SharedPtr msg, float dt)
     {
         
     }
 
     // すべての機構の位置を０にするモード
-    void PidController::zero_mode(const tria_msgs::msg::SensorFeedback::SharedPtr msg, float dt)
+    void PidController::zero_mode(const tria_msgs::msg::MachineControl::SharedPtr msg, float dt)
     {
         auto machine_current = tria_msgs::msg::MachineCurrent();
 
         machine_current.vertical_motor = vertical_cascade_->compute(
             0.0,
-            msg->vertical.position,
-            msg->vertical.rpm,
+            sensor_feedback_->vertical.position,
+            sensor_feedback_->vertical.rpm,
             dt
         );
 
         machine_current.horizontal_motor = horizontal_cascade_->compute(
             0.0,
-            msg->horizontal.position,
-            msg->horizontal.rpm,
+            sensor_feedback_->horizontal.position,
+            sensor_feedback_->horizontal.rpm,
             dt
         );
 
         machine_current.hand_motor = hand_cascade_->compute(
             0.0,
-            msg->hand.position,
-            msg->hand.rpm,
+            sensor_feedback_->hand.position,
+            sensor_feedback_->hand.rpm,
             dt
         );
 

@@ -16,9 +16,9 @@ namespace machine_controller
         void machine_control_callback(const tria_msgs::msg::MachineControl::SharedPtr msg);
         void sensor_feedback_callback(const tria_msgs::msg::SensorFeedback::SharedPtr msg);
 
-        void calibration_mode(const tria_msgs::msg::SensorFeedback::SharedPtr msg, float dt);
-        void zero_mode(const tria_msgs::msg::SensorFeedback::SharedPtr msg, float dt);
-        void normal_mode(const tria_msgs::msg::SensorFeedback::SharedPtr msg, float dt);
+        void calibration_mode(const tria_msgs::msg::MachineControl::SharedPtr msg, float dt);
+        void zero_mode(const tria_msgs::msg::MachineControl::SharedPtr msg, float dt);
+        void normal_mode(const tria_msgs::msg::MachineControl::SharedPtr msg, float dt);
 
         private:
         rclcpp::Subscription<tria_msgs::msg::MachineControl>::SharedPtr machine_control_subscriber_;
@@ -40,6 +40,6 @@ namespace machine_controller
         std::shared_ptr<PID> hand_pid_;
         std::shared_ptr<CascadeController> hand_cascade_;
 
-        tria_msgs::msg::MachineControl::SharedPtr machine_control_;
+        tria_msgs::msg::SensorFeedback::SharedPtr sensor_feedback_;
     };
 }
