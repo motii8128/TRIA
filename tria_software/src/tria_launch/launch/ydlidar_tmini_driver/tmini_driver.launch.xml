@@ -26,7 +26,7 @@
 
     <!-- T-mini Pro: model 番号は未確認のため -1 (未設定)。
          起動後のログに「model N is not mapped ...」と出るので、その N をここに設定する。 -->
-    <param name="pro_model" value="-1"/>
+    <param name="pro_model" value="150"/>
     <param name="pro_topic" value="tmini_pro/scan"/>
     <param name="pro_frame_id" value="tmini_pro_laser_frame"/>
     <param name="pro_angle_offset_deg" value="0.0"/>

@@ -17,19 +17,19 @@
            roll_deg   : x 軸まわり。正でセンサの左側が上がる
            回転の合成は R = Rz(yaw) * Ry(pitch) * Rx(roll) -->
     <param name="plus.topic" value="tmini_plus/scan"/>
-    <param name="plus.x" value="0.10"/>
-    <param name="plus.y" value="0.00"/>
-    <param name="plus.z" value="0.20"/>
+    <param name="plus.x" value="-0.143"/>
+    <param name="plus.y" value="-0.0825"/>
+    <param name="plus.z" value="0.00"/>
     <param name="plus.roll_deg" value="0.0"/>
     <param name="plus.pitch_deg" value="0.0"/>
-    <param name="plus.yaw_deg" value="0.0"/>
+    <param name="plus.yaw_deg" value="120.0"/>
 
     <param name="pro.topic" value="tmini_pro/scan"/>
-    <param name="pro.x" value="-0.10"/>
-    <param name="pro.y" value="0.00"/>
-    <param name="pro.z" value="0.20"/>
+    <param name="pro.x" value="0.143"/>
+    <param name="pro.y" value="-0.0825"/>
+    <param name="pro.z" value="0.00"/>
     <param name="pro.roll_deg" value="0.0"/>
     <param name="pro.pitch_deg" value="0.0"/>
-    <param name="pro.yaw_deg" value="180.0"/>
+    <param name="pro.yaw_deg" value="-120.0"/>
   </node>
 </launch>
