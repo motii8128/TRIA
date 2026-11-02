@@ -8,7 +8,7 @@
     <param name="max_age_s" value="0.25"/>
 
     <!-- 削除する点群の距離 [m] -->
-    <param name="remove_threshold_m" value="0.2"/>
+    <param name="remove_threshold_m" value="0.23"/>
 
     <!-- 統合するセンサ名 (カンマ区切り)。下の「センサ名.項目」のパラメータと対応する。 -->
     <param name="sensors" value="[plus,pro]"/>
@@ -25,7 +25,7 @@
     <param name="plus.z" value="0.00"/>
     <param name="plus.roll_deg" value="0.0"/>
     <param name="plus.pitch_deg" value="0.0"/>
-    <param name="plus.yaw_deg" value="120.0"/>
+    <param name="plus.yaw_deg" value="118.0"/>
 
     <param name="pro.topic" value="tmini_pro/scan"/>
     <param name="pro.x" value="0.143"/>
@@ -33,6 +33,6 @@
     <param name="pro.z" value="0.00"/>
     <param name="pro.roll_deg" value="0.0"/>
     <param name="pro.pitch_deg" value="0.0"/>
-    <param name="pro.yaw_deg" value="-120.0"/>
+    <param name="pro.yaw_deg" value="-118.0"/>
   </node>
 </launch>
