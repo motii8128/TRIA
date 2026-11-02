@@ -50,8 +50,14 @@ namespace tria_localization
 
         IterativeClosestPoint icp(max_iteration_, radius_search_, tolerance_, neighbor_threshold_);
 
-        icp.compute(new_points, prev_points_);
+        const auto icp_result = icp.compute(new_points, prev_points_);
         prev_points_ = new_points;
+
+        if(!icp_result)
+        {
+            RCLCPP_ERROR(this->get_logger(), "ICPが収束しませんでした。");
+            return;
+        }
 
         const auto t = icp.get_translation();
         const auto yaw = icp.get_yaw();

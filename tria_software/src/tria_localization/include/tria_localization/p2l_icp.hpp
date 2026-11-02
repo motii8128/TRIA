@@ -25,7 +25,7 @@ namespace tria_localization
             yaw_ = yaw;
         }
 
-        void compute(Points& source_points, Points& target_points)
+        bool compute(Points& source_points, Points& target_points)
         {
             KdTree kdtree(target_points);
 
@@ -34,11 +34,19 @@ namespace tria_localization
                 const double x0 = translation_[0], y0 = translation_[1], t0 = yaw_;
                 bool result = step(source_points, kdtree);
 
-                if(!result) break;
+                if(!result)
+                {
+                    return false;
+                };
 
                 const double d = std::abs(translation_[0]-x0) + std::abs(translation_[1]-y0) + std::abs(yaw_-t0);
-                if(d < tolerance_) break;
+                if(d < tolerance_)
+                {
+                    return true;
+                };
             }
+
+            return false;
         }
 
         Point get_translation()
