@@ -40,9 +40,9 @@ namespace wheel_controller
                 
                 target_speed[i] = x_vel * cos(angle) + y_vel * sin(angle) + rotation_vel * body_radius_;
                 
-                if(target_speed[i] > max_speed)
+                if(std::fabs(target_speed[i]) > max_speed)
                 {
-                    max_speed = target_speed[i];
+                    max_speed = std::fabs(target_speed[i]);
                 }
             }
 

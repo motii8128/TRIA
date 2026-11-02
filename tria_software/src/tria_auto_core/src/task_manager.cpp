@@ -144,7 +144,7 @@ namespace tria_auto_core
             switch (state_)
             {
                 case State::POSITIONING:
-                    if(enable_log)RCLCPP_INFO(this->get_logger(), "位置決め\tを行っています。");
+                    if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
                     if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
                     {
                         state_ = State::COLLECT_OR_RELEASE;
@@ -162,11 +162,11 @@ namespace tria_auto_core
                     // 上昇機構の目標値が０でないなら回収であると判定する
                     if(target_machine_position_.vertical_position != 0.0)
                     {
-                        if(enable_log)RCLCPP_INFO(this->get_logger(), "回収\tを行っています。");
+                        if(enable_log)RCLCPP_INFO(this->get_logger(), "\t回収を行っています。");
 
                         if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
                         {
-                            RCLCPP_INFO(this->get_logger(), "回収と判定しました。");
+                            RCLCPP_INFO(this->get_logger(), "\t回収と判定しました。");
                             state_ = WAIT;
                             break;
                         }
@@ -177,11 +177,11 @@ namespace tria_auto_core
                     }
                     else
                     {
-                        if(enable_log)RCLCPP_INFO(this->get_logger(), "設置\tを行っています。");
+                        if(enable_log)RCLCPP_INFO(this->get_logger(), "\t設置を行っています。距離: %f, アーム距離: %f", distance, arm_distance);
 
                         if(dist_hand < hand_goal_threshold_)
                         {
-                            RCLCPP_INFO(this->get_logger(), "設置と判定しました。");
+                            RCLCPP_INFO(this->get_logger(), "\t設置と判定しました。");
                             state_ = WAIT;
                             break;
                         }

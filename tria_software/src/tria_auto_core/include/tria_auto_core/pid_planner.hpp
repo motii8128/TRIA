@@ -19,8 +19,10 @@ namespace tria_auto_core
         PidPlanner();
 
         void target_pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
+        void timer_callback();
 
         private:
+        rclcpp::TimerBase::SharedPtr timer_;
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr target_pose_subscriber_;
 
         rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr twist_publisher_;
@@ -31,6 +33,8 @@ namespace tria_auto_core
         std::shared_ptr<PID> x_pid_;
         std::shared_ptr<PID> y_pid_;
         std::shared_ptr<PID> rotation_pid_;
+
+        geometry_msgs::msg::PoseStamped::SharedPtr target_pose_;
 
         rclcpp::Time last_time_;
     };

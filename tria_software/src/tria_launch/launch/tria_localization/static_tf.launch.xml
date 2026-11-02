@@ -1,6 +1,6 @@
 <launch>
     <!-- base_linkから上昇機構 -->
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_vertical_link" args="0 0 0 0 0 0 0 base_link vertical_link" output="log"/>
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_vertical_link" args="0 0 0 0 0 0 0 base_link vertical_link" output="log"/> -->
     <!-- base_linkからtmini_plus -->
     <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_tmini_plus_laser_frame" args="-0.143 -0.0825 0 2.094 0 0 base_link tmini_plus_laser_frame" output="log"/>
     <!-- base_linkからtmini_pro -->

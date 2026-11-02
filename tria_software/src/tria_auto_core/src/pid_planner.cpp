@@ -17,6 +17,7 @@ namespace tria_auto_core
         y_pid_ = std::make_shared<PID>(conf);
         rotation_pid_ = std::make_shared<PID>(conf);
 
+
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_unique<tf2_ros::TransformListener>(*tf_buffer_, this);
 
@@ -27,13 +28,21 @@ namespace tria_auto_core
             std::bind(&PidPlanner::target_pose_callback, this, _1)
         );
 
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(1), 
+            std::bind(&PidPlanner::timer_callback, this)
+        );
+
         twist_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::SystemDefaultsQoS());
 
+        target_pose_ = nullptr;
         last_time_ = this->get_clock()->now();
     }
 
-    void PidPlanner::target_pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+    void PidPlanner::timer_callback()
     {
+        if(target_pose_ == nullptr) return;
+
         const auto now = this->get_clock()->now();
         const auto dt = (now - last_time_).seconds();  
 
@@ -44,23 +53,48 @@ namespace tria_auto_core
 
             auto cmd_msg = geometry_msgs::msg::Twist();
 
-            cmd_msg.linear.x = x_pid_->compute(
-                msg->pose.position.x,
-                transform_stamped.transform.translation.x,
-                dt
-            );
+            const auto dx = target_pose_->pose.position.x - transform_stamped.transform.translation.x;
+            const auto dy = target_pose_->pose.position.y - transform_stamped.transform.translation.y;
+            const auto dtheta = to_radian(target_pose_->pose.orientation) - to_radian(transform_stamped.transform.rotation);
 
-            cmd_msg.linear.y = y_pid_->compute(
-                msg->pose.position.y,
-                transform_stamped.transform.translation.y,
-                dt
-            );
+            if(std::abs(dx) > 0.05)
+            {
+                cmd_msg.linear.x = x_pid_->compute(
+                    target_pose_->pose.position.x,
+                    transform_stamped.transform.translation.x,
+                    dt
+                );
+            }
+            else
+            {
+                cmd_msg.linear.x = 0.0;
+            }
 
-            cmd_msg.angular.z = rotation_pid_->compute(
-                to_radian(msg->pose.orientation),
-                to_radian(transform_stamped.transform.rotation),
-                dt
-            );
+            if(std::abs(dy) > 0.05)
+            {
+                cmd_msg.linear.y = y_pid_->compute(
+                    target_pose_->pose.position.y,
+                    transform_stamped.transform.translation.y,
+                    dt
+                );
+            }
+            else
+            {
+                cmd_msg.linear.y = 0.0;
+            }
+
+            if(std::abs(dtheta) > 0.05)
+            {
+                cmd_msg.angular.z = rotation_pid_->compute(
+                    to_radian(target_pose_->pose.orientation),
+                    to_radian(transform_stamped.transform.rotation),
+                    dt
+                );
+            }
+            else
+            {
+                cmd_msg.angular.z = 0.0;
+            }
 
             twist_publisher_->publish(cmd_msg);
         }
@@ -70,6 +104,11 @@ namespace tria_auto_core
         }
         
         last_time_ = now;
+    }
+
+    void PidPlanner::target_pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+    {
+        target_pose_ = msg;
     }
 }
 
