@@ -4,7 +4,7 @@ namespace tria_auto_core
 {
     PidPlanner::PidPlanner() : Node("pid_planner")
     {
-        PidConfig conf;
+        PidConfig conf = PidConfig();
         conf.p_gain = this->declare_parameter("p_gain", 1.0);
         conf.i_gain = this->declare_parameter("i_gain", 0.0);
         conf.d_gain = this->declare_parameter("d_gain", 0.0);
@@ -39,7 +39,7 @@ namespace tria_auto_core
 
         try
         {
-            geometry_msgs::msg::TransformStamped transform_stamped;
+            auto transform_stamped = geometry_msgs::msg::TransformStamped();
             transform_stamped = tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
 
             auto cmd_msg = geometry_msgs::msg::Twist();

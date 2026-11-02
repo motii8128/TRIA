@@ -28,6 +28,7 @@ namespace device_communicator
             target_pose.header.frame_id = j.at("frame_id").get<std::string>();
             target_pose.pose.position.x = j.at("x").get<double>();
             target_pose.pose.position.y = j.at("y").get<double>();
+            target_pose.pose.orientation = geometry_msgs::msg::Quaternion();
 
             task_msg.pose = target_pose;
 
