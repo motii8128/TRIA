@@ -5,10 +5,10 @@
   <include file="$(find-pkg-share tria_launch)/launch/device_communicator/game_controller_communicator.launch.xml" />
   <include file="$(find-pkg-share tria_launch)/launch/device_communicator/joy.launch.xml" />
   <!-- Webアプリとの通信 -->
-  <include file="$(find-pkg-share tria_launch)/launch/device_communicator/web_ui_connector.launch.xml" />
+  <!-- <include file="$(find-pkg-share tria_launch)/launch/device_communicator/web_ui_connector.launch.xml" /> -->
 
   <!-- 自動制御のタスク管理 -->
-  <include file="$(find-pkg-share tria_launch)/launch/tria_auto_core/task_manager.launch.xml" />
+  <!-- <include file="$(find-pkg-share tria_launch)/launch/tria_auto_core/task_manager.launch.xml" /> -->
 
   <!-- 自己位置推定 -->
   <include file="$(find-pkg-share tria_launch)/launch/tria_localization/lidar_only_odometry.launch.xml" /> 
