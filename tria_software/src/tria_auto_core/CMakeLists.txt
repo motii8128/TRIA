@@ -17,8 +17,18 @@ target_include_directories(task_manager
 )
 ament_target_dependencies(task_manager rclcpp tria_msgs geometry_msgs tria_auto_msgs tf2_ros)
 
+# PidPlanner
+add_executable(pid_planner src/pid_planner.cpp)
+
+target_include_directories(pid_planner
+  SYSTEM PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+)
+ament_target_dependencies(pid_planner rclcpp geometry_msgs tf2_ros)
+
 install(TARGETS
   task_manager
+  pid_planner
   DESTINATION lib/${PROJECT_NAME}
 )
 

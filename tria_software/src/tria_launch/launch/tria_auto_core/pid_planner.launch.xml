@@ -1,0 +1,16 @@
+<launch>
+  <!-- ノードの起動 -->
+  <node pkg="tria_auto_core" exec="pid_planner" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="p_gain" value="1.0"/>
+    <param name="i_gain" value="0.0"/>
+    <param name="d_gain" value="0.0"/>
+
+    <param name="max_integral" value="1.0"/>
+    <param name="max_output" value="1.0"/>
+
+    <!-- トピックのremap -->
+    <remap from="/target_pose" to="/target_pose"/>
+    <remap from="/cmd_vel" to="/cmd_vel"/>
+  </node>
+</launch>
