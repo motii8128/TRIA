@@ -1,8 +1,8 @@
 <launch>
-  <arg name="max_iter" default="20"/>
+  <arg name="max_iter" default="100"/>
   <arg name="tol" default="0.001"/>
   <arg name="search_radius" default="0.3"/>
-  <arg name="neighbor_threshold" default="0.3"/>
+  <arg name="neighbor_threshold" default="0.2"/>
 
   <!-- ノードの起動 -->
   <node pkg="tria_localization" exec="lidar_only_odometer" output="screen">

@@ -63,9 +63,6 @@ namespace tria_localization
             yaw_ += yaw;   // 必要なら [-π, π] に正規化
         }
 
-        tf2::Quaternion q;
-        q.setEuler(yaw_, 0.0, 0.0);
-
         auto transform_stamped = geometry_msgs::msg::TransformStamped();
         auto odom_msg = nav_msgs::msg::Odometry();
 
@@ -79,10 +76,19 @@ namespace tria_localization
         transform_stamped.transform.translation.x = x_;
         transform_stamped.transform.translation.y = y_;
 
-        transform_stamped.transform.rotation.w = q.w();
-        transform_stamped.transform.rotation.x = q.x();
-        transform_stamped.transform.rotation.y = q.y();
-        transform_stamped.transform.rotation.z = q.z();
+        transform_stamped.transform.rotation.w = 0.0;
+        transform_stamped.transform.rotation.x = 0.0;
+        if(std::isfinite(yaw_) && yaw_ != 0.0)
+        {
+            transform_stamped.transform.rotation.w = std::cos(yaw_ / 2.0);
+            transform_stamped.transform.rotation.z = std::sin(yaw_ / 2.0);
+        }
+        else
+        {
+            RCLCPP_WARN(this->get_logger(), "yawが非有限値です: %f", yaw_);
+            transform_stamped.transform.rotation.w = 1.0;
+            transform_stamped.transform.rotation.z = 0.0;
+        }
 
         odom_msg.pose.pose.position.x = x_;
         odom_msg.pose.pose.position.y = y_;
