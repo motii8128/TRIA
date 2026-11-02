@@ -164,7 +164,7 @@ namespace tria_auto_core
                     {
                         if(enable_log)RCLCPP_INFO(this->get_logger(), "回収\tを行っています。");
 
-                        if(sensor_feedback_->hand.torque > torque_threshold_)
+                        if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
                         {
                             RCLCPP_INFO(this->get_logger(), "回収と判定しました。");
                             state_ = WAIT;
@@ -181,7 +181,7 @@ namespace tria_auto_core
 
                         if(dist_hand < hand_goal_threshold_)
                         {
-                            RCLCPP_INFO(this->get_logger(), "回収と判定しました。");
+                            RCLCPP_INFO(this->get_logger(), "設置と判定しました。");
                             state_ = WAIT;
                             break;
                         }
