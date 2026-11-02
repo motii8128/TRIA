@@ -3,7 +3,7 @@
 
     <param name="ports" value="[/dev/ttyUSB0,/dev/ttyUSB1]"/>
 
-    <param name="scan_frequency_hz" value="10.0"/>
+    <param name="scan_frequency_hz" value="12.0"/>
 
     <!-- LaserScan のビン刻み [deg] (両機種共通)。1 周の点数 (4000 / 回転周波数) より粗くすること。
          10 Hz なら 1.0 (360 ビン)、12 Hz なら 1.2 (300 ビン) を推奨。 -->

@@ -27,6 +27,7 @@ constexpr double kPi = 3.14159265358979323846;
 class ScanMergerNode : public rclcpp::Node {
 public:
     ScanMergerNode() : rclcpp::Node("tmini_merge") {
+        remove_threshold_m_ = declare_parameter<double>("remove_threshold_m", 0.15);
         target_frame_ = declare_parameter<std::string>("target_frame", "base_link");
         double rate = declare_parameter<double>("publish_rate_hz", 10.0);
         max_age_s_ = declare_parameter<double>("max_age_s", 0.25);
@@ -115,7 +116,7 @@ private:
                     continue;
                 }
                 ydlidar_tmini::appendScanPoints(s.transform, s.scan->angle_min,
-                                                s.scan->angle_increment, s.scan->range_min,
+                                                s.scan->angle_increment, remove_threshold_m_,
                                                 s.scan->range_max, s.scan->ranges,
                                                 s.scan->intensities, points);
                 any_fresh = any_fresh || s.fresh;
@@ -146,6 +147,7 @@ private:
     }
 
     std::string target_frame_;
+    double remove_threshold_m_ = 0.15;
     double max_age_s_ = 0.25;
     std::vector<std::unique_ptr<Sensor>> sensors_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr pub_;
