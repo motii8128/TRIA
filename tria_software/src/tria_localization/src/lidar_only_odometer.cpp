@@ -11,8 +11,6 @@ namespace tria_localization
 
         tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
-        odom_publisher_ = this->create_publisher<nav_msgs::msg::Odometry>("/odom", rclcpp::SystemDefaultsQoS());
-
         using std::placeholders::_1;
 
         pointcloud_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud>(
@@ -24,9 +22,6 @@ namespace tria_localization
         RCLCPP_INFO(this->get_logger(), "LidarOnlyOdometerが初期化されました");
 
         prev_points_ = Points(0);
-        x_ = 0.0;
-        y_ = 0.0;
-        yaw_ = 0.0;
     }
 
     void LidarOnlyOdometer::pointcloud_callback(const sensor_msgs::msg::PointCloud::SharedPtr msg)
@@ -62,46 +57,30 @@ namespace tria_localization
         const auto t = icp.get_translation();
         const auto yaw = icp.get_yaw();
 
-        if(std::isfinite(t[0]) && std::isfinite(t[1]) && std::isfinite(yaw))
-        {
-            x_   += std::cos(yaw_) * t[0] - std::sin(yaw_) * t[1];
-            y_   += std::sin(yaw_) * t[0] + std::cos(yaw_) * t[1];
-            yaw_ += yaw;   // 必要なら [-π, π] に正規化
-        }
-
         auto transform_stamped = geometry_msgs::msg::TransformStamped();
-        auto odom_msg = nav_msgs::msg::Odometry();
 
         transform_stamped.header.stamp = this->get_clock()->now();
         transform_stamped.header.frame_id = "map";
         transform_stamped.child_frame_id = "odom";
 
-        odom_msg.header = transform_stamped.header;
-        odom_msg.child_frame_id = transform_stamped.child_frame_id;
-
-        transform_stamped.transform.translation.x = x_;
-        transform_stamped.transform.translation.y = y_;
+        transform_stamped.transform.translation.x = t[0];
+        transform_stamped.transform.translation.y = t[1];
 
         transform_stamped.transform.rotation.w = 0.0;
         transform_stamped.transform.rotation.x = 0.0;
-        if(std::isfinite(yaw_) && yaw_ != 0.0)
+        if(std::isfinite(yaw) && yaw != 0.0)
         {
-            transform_stamped.transform.rotation.w = std::cos(yaw_ / 2.0);
-            transform_stamped.transform.rotation.z = std::sin(yaw_ / 2.0);
+            transform_stamped.transform.rotation.w = std::cos(yaw / 2.0);
+            transform_stamped.transform.rotation.z = std::sin(yaw / 2.0);
         }
         else
         {
-            RCLCPP_WARN(this->get_logger(), "yawが非有限値です: %f", yaw_);
+            RCLCPP_WARN(this->get_logger(), "yawが非有限値です: %f", yaw);
             transform_stamped.transform.rotation.w = 1.0;
             transform_stamped.transform.rotation.z = 0.0;
         }
 
-        odom_msg.pose.pose.position.x = x_;
-        odom_msg.pose.pose.position.y = y_;
-        odom_msg.pose.pose.orientation = transform_stamped.transform.rotation;
-
         tf_broadcaster_->sendTransform(transform_stamped);
-        odom_publisher_->publish(odom_msg);
     }
 }
 

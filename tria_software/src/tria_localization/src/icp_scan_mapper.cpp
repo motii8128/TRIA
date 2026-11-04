@@ -4,6 +4,10 @@ namespace tria_localization
 {
     IcpScanMapper::IcpScanMapper() : Node("icp_scan_mapper")
     {
+        x_ = 0.0;
+        y_ = 0.0;
+        yaw_ = 0.0;
+
         max_iteration_ = this->declare_parameter("max_iteration", 20);
         tolerance_ = this->declare_parameter("tolerance", 0.001);
         neighbor_threshold_ = this->declare_parameter("neighbor_threshold", 0.2);
@@ -42,6 +46,8 @@ namespace tria_localization
 
         map_publisher_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/map", rclcpp::QoS(1).transient_local().reliable());
 
+        odom_publisher_ = this->create_publisher<nav_msgs::msg::Odometry>("/odom", rclcpp::SystemDefaultsQoS());
+
         initalized_ = false;
 
         RCLCPP_INFO(this->get_logger(), "IcpScanMapperが初期化されました");
@@ -72,9 +78,10 @@ namespace tria_localization
             const auto x = transform_stamped.transform.translation.x;
             const auto y = transform_stamped.transform.translation.y;
             const auto yaw = to_radian(transform_stamped.transform.rotation);
+            
 
             Point_to_Point icp(max_iteration_, tolerance_, neighbor_threshold_);
-            icp.set_pose(x, y, yaw);
+            icp.set_pose(x_ + x, y_ + y, yaw_ + yaw);
 
             Points new_points(0);
             for(const auto &ros_point : msg->points)
@@ -92,6 +99,9 @@ namespace tria_localization
             }
             const auto icp_trans = icp.get_translation();
             const auto icp_yaw = icp.get_yaw();
+            x_ = icp_trans[0];
+            y_ = icp_trans[1];
+            yaw_ = icp_yaw;
 
             builder_->add_scan(new_points, icp_trans[0], icp_trans[1], icp_yaw);
 
@@ -124,6 +134,13 @@ namespace tria_localization
                 icp_tf.transform.rotation.z = 0.0;
             }
 
+            auto odom_msg = nav_msgs::msg::Odometry();
+            odom_msg.header = icp_tf.header;
+            odom_msg.child_frame_id = icp_tf.child_frame_id;
+            odom_msg.pose.pose.position.x = x_;
+            odom_msg.pose.pose.position.y = y_;
+            odom_msg.pose.pose.orientation = transform_stamped.transform.rotation;
+            odom_publisher_->publish(odom_msg);
             tf_broadcaster_->sendTransform(icp_tf);
         }
         catch(const tf2::TransformException &ex)

@@ -1,6 +1,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <sensor_msgs/msg/point_cloud.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
@@ -28,6 +29,7 @@ namespace tria_localization
         std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
         rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr map_publisher_;
+        rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_publisher_;
         rclcpp::Subscription<sensor_msgs::msg::PointCloud>::SharedPtr pointcloud_subscriber_;
 
 
@@ -39,6 +41,8 @@ namespace tria_localization
         int max_iteration_;
         double tolerance_;
         double neighbor_threshold_;
+
+        double x_, y_, yaw_;
     };
 
     double to_radian(geometry_msgs::msg::Quaternion q)
