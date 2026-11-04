@@ -132,3 +132,10 @@ namespace tria_localization
         }
     }
 }
+
+int main(int argc, char** argv) {
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<tria_localization::IcpScanMapper>());
+    rclcpp::shutdown();
+    return 0;
+}
