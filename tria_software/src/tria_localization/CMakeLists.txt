@@ -17,8 +17,18 @@ target_include_directories(lidar_only_odometer
 )
 ament_target_dependencies(lidar_only_odometer rclcpp sensor_msgs geometry_msgs nav_msgs tf2_ros)
 
+# LiDAR Only Odometer
+add_executable(icp_scan_mapper src/icp_scan_mapper.cpp)
+
+target_include_directories(icp_scan_mapper
+  SYSTEM PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+)
+ament_target_dependencies(icp_scan_mapper rclcpp sensor_msgs geometry_msgs nav_msgs tf2_ros)
+
 install(TARGETS
   lidar_only_odometer
+  icp_scan_mapper
   DESTINATION lib/${PROJECT_NAME}
 )
 

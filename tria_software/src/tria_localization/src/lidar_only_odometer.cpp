@@ -74,7 +74,7 @@ namespace tria_localization
 
         transform_stamped.header.stamp = this->get_clock()->now();
         transform_stamped.header.frame_id = "map";
-        transform_stamped.child_frame_id = "base_link";
+        transform_stamped.child_frame_id = "odom";
 
         odom_msg.header = transform_stamped.header;
         odom_msg.child_frame_id = transform_stamped.child_frame_id;

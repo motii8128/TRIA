@@ -1,0 +1,29 @@
+<launch>
+  <arg name="max_iter" default="50"/>
+  <arg name="tol" default="0.001"/>
+  <arg name="neighbor_threshold" default="0.2"/>
+
+  <!-- ノードの起動 -->
+  <node pkg="tria_localization" exec="icp_scan_mapper" output="screen">
+    <!-- パラメータを直接指定 -->
+    <param name="max_iteration" value="$(var max_iter)"/>
+    <param name="tolerance" value="$(var tol)"/>
+    <param name="neighbor_threshold" value="$(var neighbor_threshold)"/>
+
+    <param name="resolution" value="0.05"/>
+    <param name="min_range" value="0.1"/>
+    <param name="max_range" value="12.0"/>
+    <param name="l_occ" value="0.85"/>
+    <param name="l_free" value="-0.4"/>
+    <param name="l_min" value="-2.0"/>
+    <param name="l_max" value="3.5"/>
+    <param name="occupied_threshold" value="0.65"/>
+    <param name="free_threshold" value="0.35"/>
+
+
+    <!-- トピックのremap -->
+    <remap from="/merged_points" to="/merged_points"/>
+    <remap from="/map" to="/map"/>
+  </node>
+
+</launch>
