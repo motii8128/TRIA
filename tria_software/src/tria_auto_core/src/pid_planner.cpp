@@ -100,8 +100,8 @@ namespace tria_auto_core
 
             const auto cos_yaw = std::cos(to_radian(transform_stamped.transform.rotation));
             const auto sin_yaw = std::sin(to_radian(transform_stamped.transform.rotation));
-            cmd_msg.linear.x = vx * cos_yaw - vy * sin_yaw;
-            cmd_msg.linear.y = vx * sin_yaw + vy * cos_yaw;
+            cmd_msg.linear.x = vx * cos_yaw + vy * sin_yaw;
+            cmd_msg.linear.y = -vx * sin_yaw + vy * cos_yaw;
 
             twist_publisher_->publish(cmd_msg);
         }
