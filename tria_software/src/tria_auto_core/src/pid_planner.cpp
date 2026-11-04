@@ -57,9 +57,11 @@ namespace tria_auto_core
             const auto dy = target_pose_->pose.position.y - transform_stamped.transform.translation.y;
             const auto dtheta = to_radian(target_pose_->pose.orientation) - to_radian(transform_stamped.transform.rotation);
 
+            auto vx = 0.0;
+            auto vy = 0.0;
             if(std::abs(dx) > 0.05)
             {
-                cmd_msg.linear.x = x_pid_->compute(
+                vx = x_pid_->compute(
                     target_pose_->pose.position.x,
                     transform_stamped.transform.translation.x,
                     dt
@@ -67,12 +69,12 @@ namespace tria_auto_core
             }
             else
             {
-                cmd_msg.linear.x = 0.0;
+                vx = 0.0;
             }
 
             if(std::abs(dy) > 0.05)
             {
-                cmd_msg.linear.y = y_pid_->compute(
+                vy = y_pid_->compute(
                     target_pose_->pose.position.y,
                     transform_stamped.transform.translation.y,
                     dt
@@ -80,7 +82,7 @@ namespace tria_auto_core
             }
             else
             {
-                cmd_msg.linear.y = 0.0;
+                vy = 0.0;
             }
 
             if(std::abs(dtheta) > 0.05)
@@ -95,6 +97,11 @@ namespace tria_auto_core
             {
                 cmd_msg.angular.z = 0.0;
             }
+
+            const auto cos_yaw = std::cos(to_radian(transform_stamped.transform.rotation));
+            const auto sin_yaw = std::sin(to_radian(transform_stamped.transform.rotation));
+            cmd_msg.linear.x = vx * cos_yaw - vy * sin_yaw;
+            cmd_msg.linear.y = vx * sin_yaw + vy * cos_yaw;
 
             twist_publisher_->publish(cmd_msg);
         }
