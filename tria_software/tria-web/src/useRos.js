@@ -55,7 +55,7 @@ export function useRos(url) {
           setPose({
             x: p.position.x,
             y: p.position.y,
-            yaw: yawFromQuat(p.orientation),
+            yaw: yawFromQuat(p.orientation + Math.PI / 2.0),
           });
         });
 
