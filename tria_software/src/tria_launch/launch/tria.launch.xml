@@ -14,6 +14,7 @@
 
   <!-- 自己位置推定 -->
   <include file="$(find-pkg-share tria_launch)/launch/tria_localization/lidar_only_odometry.launch.xml" /> 
+  <include file="$(find-pkg-share tria_launch)/launch/tria_localization/icp_scan_mapper.launch.xml" /> 
   <!-- 静的変換 -->
   <include file="$(find-pkg-share tria_launch)/launch/tria_localization/static_tf.launch.xml" />
 
