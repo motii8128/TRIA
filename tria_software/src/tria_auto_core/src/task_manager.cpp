@@ -17,6 +17,8 @@ namespace tria_auto_core
         torque_threshold_ = this->declare_parameter("torque_threshold", 1000);
         collect_hand_pos_ = this->declare_parameter("collect_hand_pos", -0.23);
 
+        arm_length_ = this->declare_parameter("arm_length", 0.3);
+
         // 変数の初期化
         task_ = std::vector<tria_auto_msgs::msg::Task::SharedPtr>();
         task_.clear();
@@ -55,9 +57,6 @@ namespace tria_auto_core
         // パブリッシャーの初期化
         machine_control_publisher_ = this->create_publisher<tria_msgs::msg::MachineControl>("/machine_control", rclcpp::SystemDefaultsQoS());
         pose_stamped_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/target_pose", rclcpp::SystemDefaultsQoS());
-
-        angle_calced_ = false;
-        target_angle_ = 0.0;
     }
 
     void TaskManager::timer_callback()
@@ -65,20 +64,29 @@ namespace tria_auto_core
         const auto enable_log = log_count_ > 1000;
         if(enable_log)log_count_ = 0;
 
-        // 状態に応じて別の関数を実行する
-        if(state_ == State::WAIT)
+        try
         {
-            new_task(enable_log);
+            auto current_position = tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
+
+            // 状態に応じて別の関数を実行する
+            if(state_ == State::WAIT)
+            {
+                new_task(enable_log, current_position);
+            }
+            else
+            {
+                progress_task(enable_log, current_position);
+            }
         }
-        else
+        catch(const tf2::TransformException &ex)
         {
-            progress_task(enable_log);
+            if(enable_log)RCLCPP_WARN(this->get_logger(), "自己位置を取得できません");
         }
 
         log_count_++;
     }
 
-    void TaskManager::new_task(bool enable_log)
+    void TaskManager::new_task(bool enable_log, const geometry_msgs::msg::TransformStamped current_position)
     {
         if(task_.empty())
         {
@@ -101,7 +109,22 @@ namespace tria_auto_core
         const auto progress_task = task_.front();
         task_.erase(task_.begin());
 
-        target_pose_ = progress_task->pose;
+        const auto arm_position = progress_task->pose;
+        const auto dx = arm_position.pose.position.x - current_position.transform.translation.x;
+        const auto dy = arm_position.pose.position.y - current_position.transform.translation.y;
+        const auto distance = std::sqrt(dx*dx + dy*dy);
+
+        const auto target_angle = std::atan2(dy, dx);
+
+        target_pose_.pose.position.x = std::cos(target_angle) * (distance - arm_length_);
+        target_pose_.pose.position.y = std::sin(target_angle) * (distance - arm_length_);
+        tf2::Quaternion q;
+        q.setRPY(0.0, 0.0, target_angle);
+        target_pose_.pose.orientation.x = q.x();
+        target_pose_.pose.orientation.y = q.y();
+        target_pose_.pose.orientation.z = q.z();
+        target_pose_.pose.orientation.w = q.w();
+
         
         switch (progress_task->purpose)
         {
@@ -125,114 +148,73 @@ namespace tria_auto_core
             break;
         }
 
-        angle_calced_ = false;
-        target_angle_ = 0.0;
         state_ = State::POSITIONING;
     }
 
-    void TaskManager::progress_task(bool enable_log)
+    void TaskManager::progress_task(bool enable_log, const geometry_msgs::msg::TransformStamped current_position)
     {
-        bool no_machine = true;
+        // 現在位置と目標位置の距離
+        const auto dx = target_pose_.pose.position.x - current_position.transform.translation.x;
+        const auto dy = target_pose_.pose.position.y - current_position.transform.translation.y;
+        const auto distance = std::sqrt(dx*dx + dy*dy);
 
-        try {
-            // 自己位置の取得
-            geometry_msgs::msg::TransformStamped transform_stamped;
-            transform_stamped = tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
+        // 現在と目標の機構位置の差
+        const auto dist_hand = target_machine_position_.hand_position - sensor_feedback_->hand.position;
+        const auto dist_horizontal = target_machine_position_.horizontal_position - sensor_feedback_->horizontal.position;
+        const auto dist_vertical = target_machine_position_.vertical_position - sensor_feedback_->vertical.position;
+        const auto arm_distance = std::sqrt(dist_horizontal*dist_horizontal + dist_vertical * dist_vertical);
 
-            // 現在位置と目標位置の距離
-            const auto distance = p2p_distance(target_pose_.pose.position, transform_stamped.transform.translation);
-            const auto dx = target_pose_.pose.position.x - transform_stamped.transform.translation.x;
-            const auto dy = target_pose_.pose.position.y - transform_stamped.transform.translation.y;
-
-            if(no_machine)
-            {
-                if(!angle_calced_)
+        switch (state_)
+        {
+            case State::POSITIONING:
+                if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
+                if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
                 {
-                    target_angle_ = std::atan2(dy, dx);
-                    angle_calced_ = true;
+                    state_ = State::COLLECT_OR_RELEASE;
+                    break;
                 }
-                if(distance < position_goal_threshold_)
+
+                if(distance < enable_arm_distance_)
                 {
-                    RCLCPP_INFO(this->get_logger(), "\t目標位置に到達しました。");
-                    state_ = State::WAIT;
-                    return;
+                    machine_control_publisher_->publish(target_machine_position_);
                 }
-                tf2::Quaternion q;
-                q.setEuler(target_angle_, 0.0, 0.0);
-                target_pose_.pose.orientation.x = q.x();
-                target_pose_.pose.orientation.y = q.y();
-                target_pose_.pose.orientation.z = q.z();
-                target_pose_.pose.orientation.w = q.w();
                 pose_stamped_publisher_->publish(target_pose_);
+                break;
 
-                if(enable_log)RCLCPP_INFO(this->get_logger(), "\t目標位置に到達していません。距離: %f, 目標角度: %f", distance, target_angle_);
+            case State::COLLECT_OR_RELEASE:
+                // 上昇機構の目標値が０でないなら回収であると判定する
+                if(target_machine_position_.vertical_position != 0.0)
+                {
+                    if(enable_log)RCLCPP_INFO(this->get_logger(), "\t回収を行っています。");
 
-                return;
-            }
-
-
-            // 現在と目標の機構位置の差
-            const auto dist_hand = target_machine_position_.hand_position - sensor_feedback_->hand.position;
-            const auto dist_horizontal = target_machine_position_.horizontal_position - sensor_feedback_->horizontal.position;
-            const auto dist_vertical = target_machine_position_.vertical_position - sensor_feedback_->vertical.position;
-            const auto arm_distance = std::sqrt(dist_horizontal*dist_horizontal + dist_vertical * dist_vertical);
-
-            switch (state_)
-            {
-                case State::POSITIONING:
-                    if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
-                    if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
+                    if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
                     {
-                        state_ = State::COLLECT_OR_RELEASE;
+                        RCLCPP_INFO(this->get_logger(), "\t回収と判定しました。");
+                        state_ = WAIT;
                         break;
                     }
 
-                    if(distance < enable_arm_distance_)
-                    {
-                        machine_control_publisher_->publish(target_machine_position_);
-                    }
-                    pose_stamped_publisher_->publish(target_pose_);
-                    break;
-
-                case State::COLLECT_OR_RELEASE:
-                    // 上昇機構の目標値が０でないなら回収であると判定する
-                    if(target_machine_position_.vertical_position != 0.0)
-                    {
-                        if(enable_log)RCLCPP_INFO(this->get_logger(), "\t回収を行っています。");
-
-                        if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
-                        {
-                            RCLCPP_INFO(this->get_logger(), "\t回収と判定しました。");
-                            state_ = WAIT;
-                            break;
-                        }
-
-                        target_machine_position_.hand_position = collect_hand_pos_;
-                        
-                        machine_control_publisher_->publish(target_machine_position_);
-                    }
-                    else
-                    {
-                        if(enable_log)RCLCPP_INFO(this->get_logger(), "\t設置を行っています。距離: %f, アーム距離: %f", distance, arm_distance);
-
-                        if(dist_hand < hand_goal_threshold_)
-                        {
-                            RCLCPP_INFO(this->get_logger(), "\t設置と判定しました。");
-                            state_ = WAIT;
-                            break;
-                        }
-                        target_machine_position_.hand_position = 0.0;
-                        machine_control_publisher_->publish(target_machine_position_);
-                    }
+                    target_machine_position_.hand_position = collect_hand_pos_;
                     
+                    machine_control_publisher_->publish(target_machine_position_);
+                }
+                else
+                {
+                    if(enable_log)RCLCPP_INFO(this->get_logger(), "\t設置を行っています。距離: %f, アーム距離: %f", distance, arm_distance);
+
+                    if(dist_hand < hand_goal_threshold_)
+                    {
+                        RCLCPP_INFO(this->get_logger(), "\t設置と判定しました。");
+                        state_ = WAIT;
+                        break;
+                    }
+                    target_machine_position_.hand_position = 0.0;
+                    machine_control_publisher_->publish(target_machine_position_);
+                }
                 
-                default:
-                    break;
-            }
-        }
-        catch(const tf2::TransformException &ex)
-        {
-            if(enable_log)RCLCPP_WARN(this->get_logger(), "自己位置を取得できません");
+            
+            default:
+                break;
         }
     }
 

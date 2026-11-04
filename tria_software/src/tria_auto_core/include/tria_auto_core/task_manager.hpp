@@ -34,8 +34,8 @@ namespace tria_auto_core
 
         void timer_callback();
 
-        void new_task(bool enable_log);
-        void progress_task(bool enable_log);
+        void new_task(bool enable_log, const geometry_msgs::msg::TransformStamped current_position);
+        void progress_task(bool enable_log, const geometry_msgs::msg::TransformStamped current_position);
 
         private:
         rclcpp::TimerBase::SharedPtr timer_;
@@ -70,19 +70,10 @@ namespace tria_auto_core
         double collect_horizontal_pos_;
         double collect_hand_pos_;
 
-        bool angle_calced_;
-        double target_angle_;
+        double arm_length_;
 
         int log_count_;
     };
-
-    double p2p_distance(const geometry_msgs::msg::Point target, const geometry_msgs::msg::Vector3 current)
-    {
-        const auto dx = target.x - current.x;
-        const auto dy = target.y - current.y;
-
-        return std::sqrt(dx*dx + dy*dy);
-    }
 
     std::string to_string(const tria_auto_msgs::msg::Task::SharedPtr msg)
     {
