@@ -54,7 +54,7 @@ void update_id_visualizer(ID_Visualizer* visualizer, uint32_t current_time_ms)
 
         if(visualizer->state)
         {
-            control_ws2812(&visualizer->led, 0, 64, 0);
+            control_ws2812(&visualizer->led, 0, 255, 0);
         }
         else  
         {

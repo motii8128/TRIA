@@ -16,6 +16,8 @@
 // CAN通信を行うhkdt_picoのライブラリ
 #include "can.h"
 
+#include <stdlib.h>
+
 int main()
 {
     sleep_ms(1000);
@@ -64,17 +66,28 @@ int main()
                 if(CAN_ID == 1)
                 {
                     tmp_received = (int16_t)(((uint16_t)recv_msg.data[0] << 8) | (recv_msg.data[1] & 0xFF));
-                    printf("%d\n", tmp_received);
+                    if(abs(tmp_received) < 10)
+                    {
+                        tmp_received = 0;
+                    }
                     update_pwm_manager(&pwm_manager, tmp_received);
                 }
                 if(CAN_ID == 2)
                 {
                     tmp_received = (int16_t)(((uint16_t)recv_msg.data[2] << 8) | (recv_msg.data[3] & 0xFF));
+                    if(abs(tmp_received) < 10)
+                    {
+                        tmp_received = 0;
+                    }
                     update_pwm_manager(&pwm_manager, tmp_received);
                 }
                 if(CAN_ID == 3)
                 {
                     tmp_received = (int16_t)(((uint16_t)recv_msg.data[4] << 8) | (recv_msg.data[5] & 0xFF));
+                    if(abs(tmp_received) < 10)
+                    {
+                        tmp_received = 0;
+                    }
                     update_pwm_manager(&pwm_manager, tmp_received);
                 }
             }
