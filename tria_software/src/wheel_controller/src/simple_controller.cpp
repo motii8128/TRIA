@@ -38,9 +38,9 @@ namespace wheel_controller
         // SimpleControllerは単純に比例制御を行う
         auto wheel_duty = tria_msgs::msg::WheelDuty();
 
-        wheel_duty.motor1 = target_speed[0] * 1000;
-        wheel_duty.motor2 = target_speed[1] * 1000;
-        wheel_duty.motor3 = target_speed[2] * 1000;
+        wheel_duty.motor1 = target_speed[0] * 500;
+        wheel_duty.motor2 = target_speed[1] * 500;
+        wheel_duty.motor3 = target_speed[2] * 500;
 
         wheel_duty_publisher_->publish(wheel_duty);
     }
