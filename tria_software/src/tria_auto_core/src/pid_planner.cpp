@@ -59,7 +59,7 @@ namespace tria_auto_core
 
             auto vx = 0.0;
             auto vy = 0.0;
-            if(std::abs(dx) > 0.05)
+            if(std::abs(dx) > 0.01)
             {
                 vx = x_pid_->compute(
                     target_pose_->pose.position.x,
@@ -72,7 +72,7 @@ namespace tria_auto_core
                 vx = 0.0;
             }
 
-            if(std::abs(dy) > 0.05)
+            if(std::abs(dy) > 0.01)
             {
                 vy = y_pid_->compute(
                     target_pose_->pose.position.y,
@@ -85,7 +85,7 @@ namespace tria_auto_core
                 vy = 0.0;
             }
 
-            if(std::abs(dtheta) > 0.05)
+            if(std::abs(dtheta) > 0.01)
             {
                 cmd_msg.angular.z = rotation_pid_->compute(
                     to_radian(target_pose_->pose.orientation),

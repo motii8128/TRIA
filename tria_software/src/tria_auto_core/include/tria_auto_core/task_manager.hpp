@@ -70,6 +70,8 @@ namespace tria_auto_core
         double collect_horizontal_pos_;
         double collect_hand_pos_;
 
+        bool angle_calced_;
+        double target_angle_;
 
         int log_count_;
     };

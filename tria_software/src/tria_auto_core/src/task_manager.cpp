@@ -55,6 +55,9 @@ namespace tria_auto_core
         // パブリッシャーの初期化
         machine_control_publisher_ = this->create_publisher<tria_msgs::msg::MachineControl>("/machine_control", rclcpp::SystemDefaultsQoS());
         pose_stamped_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/target_pose", rclcpp::SystemDefaultsQoS());
+
+        angle_calced_ = false;
+        target_angle_ = 0.0;
     }
 
     void TaskManager::timer_callback()
@@ -122,6 +125,8 @@ namespace tria_auto_core
             break;
         }
 
+        angle_calced_ = false;
+        target_angle_ = 0.0;
         state_ = State::POSITIONING;
     }
 
@@ -141,22 +146,26 @@ namespace tria_auto_core
 
             if(no_machine)
             {
+                if(!angle_calced_)
+                {
+                    target_angle_ = std::atan2(dy, dx);
+                    angle_calced_ = true;
+                }
                 if(distance < position_goal_threshold_)
                 {
                     RCLCPP_INFO(this->get_logger(), "\t目標位置に到達しました。");
                     state_ = State::WAIT;
                     return;
                 }
-                const auto target_yaw = std::atan2(dy, dx);
                 tf2::Quaternion q;
-                q.setEuler(target_yaw, 0.0, 0.0);
+                q.setEuler(target_angle_, 0.0, 0.0);
                 target_pose_.pose.orientation.x = q.x();
                 target_pose_.pose.orientation.y = q.y();
                 target_pose_.pose.orientation.z = q.z();
                 target_pose_.pose.orientation.w = q.w();
                 pose_stamped_publisher_->publish(target_pose_);
 
-                if(enable_log)RCLCPP_INFO(this->get_logger(), "\t目標位置に到達していません。距離: %f, 目標角度: %f", distance, target_yaw);
+                if(enable_log)RCLCPP_INFO(this->get_logger(), "\t目標位置に到達していません。距離: %f, 目標角度: %f", distance, target_angle_);
 
                 return;
             }

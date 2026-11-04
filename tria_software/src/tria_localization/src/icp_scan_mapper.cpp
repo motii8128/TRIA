@@ -139,7 +139,7 @@ namespace tria_localization
             odom_msg.child_frame_id = icp_tf.child_frame_id;
             odom_msg.pose.pose.position.x = x_;
             odom_msg.pose.pose.position.y = y_;
-            odom_msg.pose.pose.orientation = transform_stamped.transform.rotation;
+            odom_msg.pose.pose.orientation = icp_tf.transform.rotation;
             odom_publisher_->publish(odom_msg);
             tf_broadcaster_->sendTransform(icp_tf);
         }
