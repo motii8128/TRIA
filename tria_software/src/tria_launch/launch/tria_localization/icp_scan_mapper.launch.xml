@@ -1,7 +1,7 @@
 <launch>
-  <arg name="max_iter" default="50"/>
+  <arg name="max_iter" default="100"/>
   <arg name="tol" default="0.001"/>
-  <arg name="neighbor_threshold" default="0.2"/>
+  <arg name="neighbor_threshold" default="0.3"/>
 
   <!-- ノードの起動 -->
   <node pkg="tria_localization" exec="icp_scan_mapper" output="screen">

@@ -2,8 +2,8 @@
   <!-- ノードの起動 -->
   <node pkg="tria_auto_core" exec="task_manager" output="screen">
     <!-- パラメータを直接指定 -->
-    <param name="position_goal_threshold" value="0.1"/>
-    <param name="arm_goal_threshold" value="0.1"/>
+    <param name="position_goal_threshold" value="0.01"/>
+    <param name="arm_goal_threshold" value="0.01"/>
     <param name="hand_goal_threshold" value="0.01"/>
 
     <param name="collect_horizontal_pos" value="-1.75"/>

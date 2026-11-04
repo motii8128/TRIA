@@ -127,6 +127,8 @@ namespace tria_auto_core
 
     void TaskManager::progress_task(bool enable_log)
     {
+        bool no_machine = true;
+
         try {
             // 自己位置の取得
             geometry_msgs::msg::TransformStamped transform_stamped;
@@ -134,6 +136,31 @@ namespace tria_auto_core
 
             // 現在位置と目標位置の距離
             const auto distance = p2p_distance(target_pose_.pose.position, transform_stamped.transform.translation);
+            const auto dx = target_pose_.pose.position.x - transform_stamped.transform.translation.x;
+            const auto dy = target_pose_.pose.position.y - transform_stamped.transform.translation.y;
+
+            if(no_machine)
+            {
+                if(distance < position_goal_threshold_)
+                {
+                    RCLCPP_INFO(this->get_logger(), "\t目標位置に到達しました。");
+                    state_ = State::WAIT;
+                    return;
+                }
+                const auto target_yaw = std::atan2(dy, dx);
+                tf2::Quaternion q;
+                q.setEuler(target_yaw, 0.0, 0.0);
+                target_pose_.pose.orientation.x = q.x();
+                target_pose_.pose.orientation.y = q.y();
+                target_pose_.pose.orientation.z = q.z();
+                target_pose_.pose.orientation.w = q.w();
+                pose_stamped_publisher_->publish(target_pose_);
+
+                if(enable_log)RCLCPP_INFO(this->get_logger(), "\t目標位置に到達していません。距離: %f, 目標角度: %f", distance, target_yaw);
+
+                return;
+            }
+
 
             // 現在と目標の機構位置の差
             const auto dist_hand = target_machine_position_.hand_position - sensor_feedback_->hand.position;
