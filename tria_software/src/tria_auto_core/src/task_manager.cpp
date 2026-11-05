@@ -168,7 +168,8 @@ namespace tria_auto_core
         {
             case State::POSITIONING:
                 if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
-                if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
+                // if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
+                if(distance < position_goal_threshold_)
                 {
                     state_ = State::COLLECT_OR_RELEASE;
                     break;
@@ -187,7 +188,8 @@ namespace tria_auto_core
                 {
                     if(enable_log)RCLCPP_INFO(this->get_logger(), "\t回収を行っています。");
 
-                    if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
+                    // if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
+                    if(true)
                     {
                         RCLCPP_INFO(this->get_logger(), "\t回収と判定しました。");
                         state_ = WAIT;
