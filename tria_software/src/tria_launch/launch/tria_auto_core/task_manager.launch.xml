@@ -3,7 +3,7 @@
   <node pkg="tria_auto_core" exec="task_manager" output="screen">
     <!-- パラメータを直接指定 -->
      <!-- ゴールとみなす目的位置との許容誤差 -->
-    <param name="position_goal_threshold" value="0.02"/>
+    <param name="position_goal_threshold" value="0.01"/>
     <!-- ゴールとみなす機構制御の許容誤差 -->
     <param name="arm_goal_threshold" value="0.01"/>
     <!-- ハンド -->
@@ -22,7 +22,7 @@
     <param name="torque_threshold" value="200"/>
 
     <!-- 最大展開時のアームの長さ -->
-    <param name="arm_length" value="0.3"/>
+    <param name="arm_length" value="0.001"/>
 
     <!-- トピックのremap -->
     <remap from="/task" to="/task"/>
