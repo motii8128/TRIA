@@ -89,7 +89,7 @@ namespace tria_localization
                 new_points.push_back(Point{ros_point.x, ros_point.y});
             }
 
-            Points target = pc_map_->local_points(Point{x, y}, 3.0);
+            Points target = pc_map_->local_points(Point{x, y}, 8.0);
             const auto icp_result = icp.compute(new_points, target);
 
             if(!icp_result)
@@ -108,7 +108,8 @@ namespace tria_localization
             auto map_msg = nav_msgs::msg::OccupancyGrid();
 
             to_occupancy_grid_msg(builder_->to_grid(), map_msg);
-            map_msg.header = msg->header;
+            map_msg.header.frame_id = "map";
+            map_msg.header.stamp = msg->header.stamp;
             map_publisher_->publish(map_msg);
 
             auto icp_tf = geometry_msgs::msg::TransformStamped();
