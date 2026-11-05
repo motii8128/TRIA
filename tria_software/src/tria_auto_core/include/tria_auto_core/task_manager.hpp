@@ -75,6 +75,11 @@ namespace tria_auto_core
         int log_count_;
     };
 
+    double to_radian(geometry_msgs::msg::Quaternion q)
+    {
+        return std::atan2(2.0 * (q.w * q.z + q.x * q.y), 1.0 - 2.0 * (q.y * q.y + q.z * q.z));
+    }
+
     std::string to_string(const tria_auto_msgs::msg::Task::SharedPtr msg)
     {
         auto mode = std::string("モード：");

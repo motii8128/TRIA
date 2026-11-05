@@ -115,11 +115,12 @@ namespace tria_auto_core
         const auto distance = std::sqrt(dx*dx + dy*dy);
 
         const auto target_angle = std::atan2(dy, dx);
-
+        target_pose_.header.frame_id = "map";
+        target_pose_.header.stamp = this->get_clock()->now();
         target_pose_.pose.position.x = std::cos(target_angle) * (distance - arm_length_);
         target_pose_.pose.position.y = std::sin(target_angle) * (distance - arm_length_);
         tf2::Quaternion q;
-        q.setRPY(0.0, 0.0, target_angle);
+        q.setRPY(0.0, 0.0, target_angle - M_PI / 2.0);
         target_pose_.pose.orientation.x = q.x();
         target_pose_.pose.orientation.y = q.y();
         target_pose_.pose.orientation.z = q.z();
@@ -158,6 +159,9 @@ namespace tria_auto_core
         const auto dy = target_pose_.pose.position.y - current_position.transform.translation.y;
         const auto distance = std::sqrt(dx*dx + dy*dy);
 
+        // 角度の差
+        const auto dtheta = std::abs(to_radian(target_pose_.pose.orientation) - to_radian(current_position.transform.rotation));
+
         // 現在と目標の機構位置の差
         const auto dist_hand = target_machine_position_.hand_position - sensor_feedback_->hand.position;
         const auto dist_horizontal = target_machine_position_.horizontal_position - sensor_feedback_->horizontal.position;
@@ -169,7 +173,7 @@ namespace tria_auto_core
             case State::POSITIONING:
                 if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
                 // if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
-                if(distance < position_goal_threshold_)
+                if(distance < position_goal_threshold_ && dtheta < position_goal_threshold_)
                 {
                     state_ = State::COLLECT_OR_RELEASE;
                     break;
