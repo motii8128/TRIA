@@ -15,6 +15,7 @@ namespace tria_auto_core
 
         x_pid_ = std::make_shared<PID>(conf);
         y_pid_ = std::make_shared<PID>(conf);
+        conf.max_output = 0.3;
         rotation_pid_ = std::make_shared<PID>(conf);
 
 
@@ -59,7 +60,7 @@ namespace tria_auto_core
 
             auto vx = 0.0;
             auto vy = 0.0;
-            if(std::abs(dx) > 0.01)
+            if(std::abs(dx) > 0.08)
             {
                 vx = x_pid_->compute(
                     target_pose_->pose.position.x,

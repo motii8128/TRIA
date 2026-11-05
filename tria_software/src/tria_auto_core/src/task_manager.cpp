@@ -117,10 +117,11 @@ namespace tria_auto_core
         const auto target_angle = std::atan2(dy, dx);
         target_pose_.header.frame_id = "map";
         target_pose_.header.stamp = this->get_clock()->now();
-        target_pose_.pose.position.x = std::cos(target_angle) * (distance - arm_length_);
-        target_pose_.pose.position.y = std::sin(target_angle) * (distance - arm_length_);
+        target_pose_.pose.position.x = current_position.transform.translation.x + std::cos(target_angle) * (distance - arm_length_);
+        target_pose_.pose.position.y = current_position.transform.translation.y + std::sin(target_angle) * (distance - arm_length_);
         tf2::Quaternion q;
         q.setRPY(0.0, 0.0, target_angle - M_PI / 2.0);
+        // q.setRPY(0.0, 0.0, 0.0);
         target_pose_.pose.orientation.x = q.x();
         target_pose_.pose.orientation.y = q.y();
         target_pose_.pose.orientation.z = q.z();
