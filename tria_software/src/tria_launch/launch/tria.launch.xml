@@ -19,7 +19,7 @@
   <include file="$(find-pkg-share tria_launch)/launch/tria_localization/static_tf.launch.xml" />
 
   <!-- 機構のPID制御 -->
-  <!-- <include file="$(find-pkg-share tria_launch)/launch/machine_controller/pid_controller.launch.xml" /> -->
+  <include file="$(find-pkg-share tria_launch)/launch/machine_controller/pid_controller.launch.xml" />
 
   <!-- 足回りの比例制御＆運動学 -->
   <include file="$(find-pkg-share tria_launch)/launch/wheel_controller/simple_controller.launch.xml" />

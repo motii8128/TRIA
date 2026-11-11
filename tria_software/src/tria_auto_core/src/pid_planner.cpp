@@ -15,7 +15,7 @@ namespace tria_auto_core
 
         x_pid_ = std::make_shared<PID>(conf);
         y_pid_ = std::make_shared<PID>(conf);
-        conf.max_output = 0.3;
+        conf.max_output = 0.5;
         rotation_pid_ = std::make_shared<PID>(conf);
 
 
