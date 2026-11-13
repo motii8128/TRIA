@@ -89,7 +89,7 @@ namespace tria_localization
                 new_points.push_back(Point{ros_point.x, ros_point.y});
             }
 
-            Points target = pc_map_->local_points(Point{x, y}, 8.0);
+            Points target = pc_map_->local_points(Point{x_+x, y_+y}, 12.0);
             const auto icp_result = icp.compute(new_points, target);
 
             if(!icp_result)
