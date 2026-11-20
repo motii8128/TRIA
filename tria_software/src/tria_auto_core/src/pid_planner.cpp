@@ -5,17 +5,25 @@ namespace tria_auto_core
     PidPlanner::PidPlanner() : Node("pid_planner")
     {
         PidConfig conf = PidConfig();
-        conf.p_gain = this->declare_parameter("p_gain", 1.0);
-        conf.i_gain = this->declare_parameter("i_gain", 0.0);
-        conf.d_gain = this->declare_parameter("d_gain", 0.0);
+        conf.p_gain = this->declare_parameter("linear.p_gain", 1.0);
+        conf.i_gain = this->declare_parameter("linear.i_gain", 0.0);
+        conf.d_gain = this->declare_parameter("linear.d_gain", 0.0);
 
         conf.enable_dynamic_integral_reset = true;
-        conf.max_integral = this->declare_parameter("max_integral", 1.0);
-        conf.max_output = this->declare_parameter("max_output", 1.0);
+        conf.max_integral = this->declare_parameter("linear.max_integral", 1.0);
+        conf.max_output = this->declare_parameter("linear.max_output", 1.0);
 
         x_pid_ = std::make_shared<PID>(conf);
         y_pid_ = std::make_shared<PID>(conf);
-        conf.max_output = 0.5;
+
+
+        conf.p_gain = this->declare_parameter("angular.p_gain", 1.0);
+        conf.i_gain = this->declare_parameter("angular.i_gain", 0.0);
+        conf.d_gain = this->declare_parameter("angular.d_gain", 0.0);
+
+        conf.enable_dynamic_integral_reset = true;
+        conf.max_integral = this->declare_parameter("angular.max_integral", 1.0);
+        conf.max_output = this->declare_parameter("angular.max_output", 1.0);
         rotation_pid_ = std::make_shared<PID>(conf);
 
 
