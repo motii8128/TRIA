@@ -5,6 +5,7 @@ import { useRos } from "./useRos.js";
 const MODES = [
   { id: "collect", label: "回収モード", hint: "地図をタップすると、その場所を回収地点として送信します" },
   { id: "place", label: "設置モード", hint: "地図をタップすると、その場所を設置地点として送信します" },
+  { id: "calibration", label: "キャリブレーション", hint: "地図をタップすると、自動機を開始した地点に戻ります" },
 ];
 
 const STATUS_TEXT = {

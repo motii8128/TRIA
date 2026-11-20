@@ -6,6 +6,7 @@
   --line: #d3d9df;
   --collect: #0b6bcb;
   --place: #7a3fc2;
+  --calibration: #0d9800
   --ok: #1f9d55;
   --ng: #d6372e;
   color-scheme: light;
@@ -19,6 +20,7 @@
     --line: #2f3944;
     --collect: #5aa6f5;
     --place: #b48cf0;
+    --calibration: #15ff00
     color-scheme: dark;
   }
 }
@@ -68,18 +70,23 @@ button { font: inherit; cursor: pointer; }
 .mode {
   padding: 18px 12px; font-size: 18px; font-weight: 700; border-radius: 8px;
   background: transparent; border: 2px solid currentColor;
+  transition: background-color 0.12s, filter 0.12s;
 }
 .mode.collect { color: var(--collect); }
 .mode.place { color: var(--place); }
+.mode.calibration { color: var(--calibration); }   /* ← 追加 */
+
+/* 選択中 */
 .mode.on.collect { background: var(--collect); border-color: var(--collect); color: #fff; }
 .mode.on.place { background: var(--place); border-color: var(--place); color: #fff; }
-.hint { font-size: 13px; color: var(--sub); line-height: 1.6; margin: 10px 0 0; }
-.pose { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-variant-numeric: tabular-nums; }
-.pose dt { color: var(--sub); }
-.pose dd { margin: 0; text-align: right; }
-.log { list-style: none; margin: 0; padding: 0; font-size: 13px; font-variant-numeric: tabular-nums; }
-.log li { padding: 5px 0; border-bottom: 1px solid var(--line); }
-.log li.ng { color: var(--ng); }
+.mode.on.calibration { background: var(--calibration); border-color: var(--calibration); color: #fff; }   /* ← 追加 */
+
+/* ホバー（マウス操作のときだけ。タッチ端末では色が残らないようにする） */
+@media (hover: hover) {
+  .mode:not(.on):hover { background: color-mix(in srgb, currentColor 14%, transparent); }
+  .mode.on:hover { filter: brightness(1.12); }
+}
+.mode:active { transform: translateY(1px); }
 
 @media (max-width: 760px) {
   .main { flex-direction: column; }
