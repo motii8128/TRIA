@@ -48,6 +48,9 @@ namespace device_communicator
 
         rclcpp::TimerBase::SharedPtr timer_;
         rclcpp::Publisher<tria_msgs::msg::SensorFeedback>::SharedPtr feedback_publisher_;
+        rclcpp::Publisher<tria_msgs::msg::MotorFeedback>::SharedPtr vertical_feedback_publisher_;
+        rclcpp::Publisher<tria_msgs::msg::MotorFeedback>::SharedPtr horizontal_feedback_publisher_;
+        rclcpp::Publisher<tria_msgs::msg::MotorFeedback>::SharedPtr hand_feedback_publisher_;
 
         rclcpp::Subscription<tria_msgs::msg::MachineCurrent>::SharedPtr machine_current_subscriber_;
         rclcpp::Subscription<tria_msgs::msg::WheelDuty>::SharedPtr wheel_duty_subscriber_;

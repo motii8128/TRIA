@@ -77,6 +77,10 @@ namespace device_communicator
 
         //　パブリッシャーの初期化
         feedback_publisher_ = this->create_publisher<tria_msgs::msg::SensorFeedback>("/ccb/sensor_feedback", rclcpp::SystemDefaultsQoS());
+
+        vertical_feedback_publisher_ = this->create_publisher<tria_msgs::msg::MotorFeedback>("/ccb/feedback/vertical", rclcpp::SystemDefaultsQoS());
+        horizontal_feedback_publisher_ = this->create_publisher<tria_msgs::msg::MotorFeedback>("/ccb/feedback/horizontal", rclcpp::SystemDefaultsQoS());
+        hand_feedback_publisher_ = this->create_publisher<tria_msgs::msg::MotorFeedback>("/ccb/feedback/hand", rclcpp::SystemDefaultsQoS());
     }
 
     void CcbCommunicator::machine_current_callback(const tria_msgs::msg::MachineCurrent::SharedPtr msg)
@@ -119,16 +123,19 @@ namespace device_communicator
                         // CAN IDが１なら水平移動のモーターであるので
                         robomaster_[0].update(sensor.velocity(), sensor.angle(), sensor.torque());
                         sensor_feedback_.horizontal = robomaster_[0].to_ROS2();
+                        horizontal_feedback_publisher_->publish(sensor_feedback_.horizontal);
                         break;
                     case 2:
                         // CAN IDが２なら上下移動のモーターであるので
                         robomaster_[1].update(sensor.velocity(), sensor.angle(), sensor.torque());
                         sensor_feedback_.vertical = robomaster_[1].to_ROS2();
+                        vertical_feedback_publisher_->publish(sensor_feedback_.vertical);
                         break;
                     case 3:
                         // CAN IDが３ならハンドのモーターであるので
                         robomaster_[2].update(sensor.velocity(), sensor.angle(), sensor.torque());
                         sensor_feedback_.hand = robomaster_[2].to_ROS2();
+                        hand_feedback_publisher_->publish(sensor_feedback_.hand);
                         break;
 
                     default:
