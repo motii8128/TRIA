@@ -86,6 +86,7 @@ namespace tria_auto_core
         double arm_length_;
 
         int log_count_;
+        int hand_ok_count_;
     };
 
     double to_radian(geometry_msgs::msg::Quaternion q)

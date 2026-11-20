@@ -29,6 +29,7 @@ namespace tria_auto_core
         sensor_feedback_ = nullptr;
         state_ = State::WAIT;
         log_count_ = 0;
+        hand_ok_count_ = 0;
 
         // TFまわりの初期化
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
@@ -193,6 +194,7 @@ namespace tria_auto_core
                 if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
                 // if(distance < position_goal_threshold_ && dtheta < position_goal_threshold_)
                 {
+                    hand_ok_count_ = 0;
                     state_ = State::COLLECT_OR_RELEASE;
                     break;
                 }
@@ -216,7 +218,11 @@ namespace tria_auto_core
                 {
                     if(enable_log)RCLCPP_INFO(this->get_logger(), "\t回収を行っています。");
 
-                    if(sensor_feedback_->hand.torque < 0.0 && std::abs(sensor_feedback_->hand.torque) > torque_threshold_)
+                    if(dist_hand < hand_goal_threshold_)
+                    {
+                        hand_ok_count_++;
+                    }
+                    if(hand_ok_count_ > 1000)
                     {
                         RCLCPP_INFO(this->get_logger(), "\t回収と判定しました。");
                         state_ = WAIT;
@@ -233,7 +239,12 @@ namespace tria_auto_core
                 {
                     if(enable_log)RCLCPP_INFO(this->get_logger(), "\t設置を行っています。距離: %f, アーム距離: %f", distance, arm_distance);
 
+
                     if(dist_hand < hand_goal_threshold_)
+                    {
+                        hand_ok_count_++;
+                    }
+                    if(hand_ok_count_ > 1000)
                     {
                         RCLCPP_INFO(this->get_logger(), "\t設置と判定しました。");
                         state_ = WAIT;
