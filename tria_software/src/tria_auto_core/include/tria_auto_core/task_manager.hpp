@@ -5,7 +5,7 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <tria_auto_msgs/msg/task.hpp>
 #include <tria_msgs/msg/sensor_feedback.hpp>
-#include <tria_msgs/msg/machine_control.hpp>
+#include <std_msgs/msg/float64.hpp>
 
 
 #include <tf2_ros/transform_listener.h>
@@ -21,6 +21,16 @@ namespace tria_auto_core
         WAIT,
         POSITIONING,
         COLLECT_OR_RELEASE,
+    };
+
+    struct MachineTargetPosition
+    {
+        double horizontal_position;
+        double vertical_position;
+        double hand_position;
+
+        MachineTargetPosition():
+        horizontal_position(0.0),vertical_position(0.0),hand_position(0.0){}
     };
 
     class TaskManager : public rclcpp::Node
@@ -43,14 +53,17 @@ namespace tria_auto_core
         rclcpp::Subscription<tria_msgs::msg::SensorFeedback>::SharedPtr sensor_feedback_subscriber_;
 
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_stamped_publisher_;
-        rclcpp::Publisher<tria_msgs::msg::MachineControl>::SharedPtr machine_control_publisher_;
+
+        rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr vertical_target_publisher_;
+        rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr horizontal_target_publisher_;
+        rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr hand_target_publisher_;
 
         std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
         std::vector<tria_auto_msgs::msg::Task::SharedPtr> task_;
         geometry_msgs::msg::PoseStamped target_pose_;
-        tria_msgs::msg::MachineControl target_machine_position_;
+        MachineTargetPosition target_machine_position_;
         State state_;
         tria_msgs::msg::SensorFeedback::SharedPtr sensor_feedback_;
 

@@ -24,7 +24,7 @@ namespace tria_auto_core
         task_.clear();
         
         target_pose_ = geometry_msgs::msg::PoseStamped();
-        target_machine_position_ = tria_msgs::msg::MachineControl();
+        target_machine_position_ = MachineTargetPosition();
 
         sensor_feedback_ = nullptr;
         state_ = State::WAIT;
@@ -55,7 +55,9 @@ namespace tria_auto_core
         );
 
         // パブリッシャーの初期化
-        machine_control_publisher_ = this->create_publisher<tria_msgs::msg::MachineControl>("/machine_control", rclcpp::SystemDefaultsQoS());
+        vertical_target_publisher_ = this->create_publisher<std_msgs::msg::Float64>("/machine/target/vertical", rclcpp::SystemDefaultsQoS());
+        horizontal_target_publisher_ = this->create_publisher<std_msgs::msg::Float64>("/machine/target/horizontal", rclcpp::SystemDefaultsQoS());
+        hand_target_publisher_ = this->create_publisher<std_msgs::msg::Float64>("/machine/target/hand", rclcpp::SystemDefaultsQoS());
         pose_stamped_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/target_pose", rclcpp::SystemDefaultsQoS());
     }
 
@@ -95,7 +97,13 @@ namespace tria_auto_core
             target_machine_position_.horizontal_position = 0.0;
             target_machine_position_.vertical_position = 0.0;
 
-            machine_control_publisher_->publish(target_machine_position_);
+            auto vertical_msg = std_msgs::msg::Float64();
+            vertical_msg.data = target_machine_position_.vertical_position;
+            auto horizontal_msg = std_msgs::msg::Float64();
+            horizontal_msg.data = target_machine_position_.horizontal_position;
+
+            vertical_target_publisher_->publish(vertical_msg);
+            horizontal_target_publisher_->publish(horizontal_msg);
 
             return;
         }
@@ -103,6 +111,7 @@ namespace tria_auto_core
         if(sensor_feedback_ == nullptr)
         {
             if(enable_log)RCLCPP_INFO(this->get_logger(), "機構位置を取得できません。");
+            return;
         }
 
         // 進行中のタスクに先頭のタスクを追加し、状態を「進行中」に変更する
@@ -146,6 +155,14 @@ namespace tria_auto_core
             target_machine_position_.horizontal_position = 0.0;
             target_machine_position_.vertical_position = 0.0;
 
+            target_pose_.pose.position.x = 0.0;
+            target_pose_.pose.position.x = 0.0;
+            q.setRPY(0.0, 0.0, 0.0);
+            target_pose_.pose.orientation.x = q.x();
+            target_pose_.pose.orientation.y = q.y();
+            target_pose_.pose.orientation.z = q.z();
+            target_pose_.pose.orientation.w = q.w();
+
         default:
             break;
         }
@@ -182,7 +199,13 @@ namespace tria_auto_core
 
                 if(distance < enable_arm_distance_ && dtheta < enable_arm_distance_)
                 {
-                    machine_control_publisher_->publish(target_machine_position_);
+                    auto vertical_msg = std_msgs::msg::Float64();
+                    vertical_msg.data = target_machine_position_.vertical_position;
+                    auto horizontal_msg = std_msgs::msg::Float64();
+                    horizontal_msg.data = target_machine_position_.horizontal_position;
+
+                    vertical_target_publisher_->publish(vertical_msg);
+                    horizontal_target_publisher_->publish(horizontal_msg);
                 }
                 pose_stamped_publisher_->publish(target_pose_);
                 break;
@@ -201,8 +224,10 @@ namespace tria_auto_core
                     }
 
                     target_machine_position_.hand_position = collect_hand_pos_;
-                    
-                    machine_control_publisher_->publish(target_machine_position_);
+
+                    auto hand_msg = std_msgs::msg::Float64();
+                    hand_msg.data = target_machine_position_.hand_position;
+                    hand_target_publisher_->publish(hand_msg);
                 }
                 else
                 {
@@ -215,9 +240,13 @@ namespace tria_auto_core
                         break;
                     }
                     target_machine_position_.hand_position = 0.0;
-                    machine_control_publisher_->publish(target_machine_position_);
+                    
+                    auto hand_msg = std_msgs::msg::Float64();
+                    hand_msg.data = target_machine_position_.hand_position;
+                    hand_target_publisher_->publish(hand_msg);
                 }
-                
+            
+            
             
             default:
                 break;

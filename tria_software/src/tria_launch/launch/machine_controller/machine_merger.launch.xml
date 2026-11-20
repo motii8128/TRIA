@@ -1,5 +1,8 @@
 <launch>
     <!-- ノードの起動 -->
     <node pkg="machine_controller" exec="machine_merger" output="screen">
+        <remap from="/target_currnet/vertical" to="/machine/current/vertical"/>
+        <remap from="/target_currnet/horizontal" to="/machine/current/horizontal"/>
+        <remap from="/target_currnet/hand" to="/machine/current/hand"/>
     </node>
 </launch>
