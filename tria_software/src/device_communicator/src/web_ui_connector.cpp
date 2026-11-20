@@ -42,6 +42,11 @@ namespace device_communicator
                 task_msg.purpose = tria_auto_msgs::msg::Task::RELEASE;
             }
 
+            if(mode_str == "calibration")
+            {
+                task_msg.purpose = tria_auto_msgs::msg::Task::CALIBRATION;
+            }
+
             task_publisher_->publish(task_msg);
         }
         catch(const std::exception& e)
