@@ -262,28 +262,28 @@ namespace tria_auto_core
                 break;
             
             case State::CALIBRATION:
-            {
-                pose_stamped_publisher_->publish(target_pose_);
-                auto vertical_msg = std_msgs::msg::Float64();
-                vertical_msg.data = target_machine_position_.vertical_position;
-                auto horizontal_msg = std_msgs::msg::Float64();
-                horizontal_msg.data = target_machine_position_.horizontal_position;
-                auto hand_msg = std_msgs::msg::Float64();
-                hand_msg.data = target_machine_position_.hand_position;
-
-                vertical_target_publisher_->publish(vertical_msg);
-                horizontal_target_publisher_->publish(horizontal_msg);
-                hand_target_publisher_->publish(hand_msg);
-
-                if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_ && dist_hand < hand_goal_threshold_)
                 {
-                    RCLCPP_INFO(this->get_logger(), "\tキャリブレーション完了");
-                    state_ = WAIT;
+                    pose_stamped_publisher_->publish(target_pose_);
+                    auto vertical_msg = std_msgs::msg::Float64();
+                    vertical_msg.data = target_machine_position_.vertical_position;
+                    auto horizontal_msg = std_msgs::msg::Float64();
+                    horizontal_msg.data = target_machine_position_.horizontal_position;
+                    auto hand_msg = std_msgs::msg::Float64();
+                    hand_msg.data = target_machine_position_.hand_position;
+
+                    vertical_target_publisher_->publish(vertical_msg);
+                    horizontal_target_publisher_->publish(horizontal_msg);
+                    hand_target_publisher_->publish(hand_msg);
+
+                    if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_ && dist_hand < hand_goal_threshold_)
+                    {
+                        RCLCPP_INFO(this->get_logger(), "\tキャリブレーション完了");
+                        state_ = WAIT;
+                        break;
+                    }
+
                     break;
                 }
-
-                break;
-            }
 
             default:
                 break;

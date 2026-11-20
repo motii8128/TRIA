@@ -2,19 +2,19 @@
   <!-- ノードの起動 -->
   <node pkg="tria_auto_core" exec="pid_planner" output="screen">
     <!-- パラメータを直接指定 -->
-    <param name="linear.p_gain" value="1.0"/>
+    <param name="linear.p_gain" value="2.0"/>
     <param name="linear.i_gain" value="0.0"/>
     <param name="linear.d_gain" value="0.0"/>
 
     <param name="linear.max_integral" value="0.1"/>
-    <param name="linear.max_output" value="0.2"/>
+    <param name="linear.max_output" value="0.25"/>
 
     <param name="angular.p_gain" value="1.0"/>
     <param name="angular.i_gain" value="0.0"/>
     <param name="angular.d_gain" value="0.0"/>
 
     <param name="angular.max_integral" value="0.1"/>
-    <param name="angular.max_output" value="0.2"/>
+    <param name="angular.max_output" value="0.25"/>
 
     <!-- トピックのremap -->
     <remap from="/target_pose" to="/target_pose"/>
