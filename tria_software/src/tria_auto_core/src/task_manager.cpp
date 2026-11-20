@@ -157,12 +157,15 @@ namespace tria_auto_core
             target_machine_position_.vertical_position = 0.0;
 
             target_pose_.pose.position.x = 0.0;
-            target_pose_.pose.position.x = 0.0;
+            target_pose_.pose.position.y = 0.0;
             q.setRPY(0.0, 0.0, 0.0);
             target_pose_.pose.orientation.x = q.x();
             target_pose_.pose.orientation.y = q.y();
             target_pose_.pose.orientation.z = q.z();
             target_pose_.pose.orientation.w = q.w();
+
+            state_ = State::CALIBRATION;
+            return;
 
         default:
             break;
@@ -192,7 +195,6 @@ namespace tria_auto_core
             case State::POSITIONING:
                 if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
                 if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
-                // if(distance < position_goal_threshold_ && dtheta < position_goal_threshold_)
                 {
                     hand_ok_count_ = 0;
                     state_ = State::COLLECT_OR_RELEASE;
@@ -258,7 +260,24 @@ namespace tria_auto_core
                 }
             
             
-            
+            case CALIBRATION:
+                
+                pose_stamped_publisher_->publish(target_pose_);
+                auto vertical_msg = std_msgs::msg::Float64();
+                vertical_msg.data = target_machine_position_.vertical_position;
+                auto horizontal_msg = std_msgs::msg::Float64();
+                horizontal_msg.data = target_machine_position_.horizontal_position;
+                auto hand_msg = std_msgs::msg::Float64();
+                hand_msg.data = target_machine_position_.hand_position;
+                hand_target_publisher_->publish(hand_msg);
+
+                if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_ && dist_hand < hand_goal_threshold_)
+                {
+                    RCLCPP_INFO(this->get_logger(), "\tキャリブレーション完了");
+                    state_ = WAIT;
+                    break;
+                }
+
             default:
                 break;
         }

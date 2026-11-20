@@ -21,6 +21,7 @@ namespace tria_auto_core
         WAIT,
         POSITIONING,
         COLLECT_OR_RELEASE,
+        CALIBRATION
     };
 
     struct MachineTargetPosition
