@@ -1,0 +1,5 @@
+<launch>
+    <!-- ノードの起動 -->
+    <node pkg="machine_controller" exec="machine_merger" output="screen">
+    </node>
+</launch>
