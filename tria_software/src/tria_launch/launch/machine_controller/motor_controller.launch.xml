@@ -56,7 +56,7 @@
         <!-- トピックのremap -->
         <remap from="/target" to="/machine/target/vertical"/>
         <remap from="/feedback" to="/ccb/feedback/vertical"/>
-        <remap from="/target_currnet" to="/machine/current/vertical"/>
+        <remap from="/target_current" to="/machine/current/vertical"/>
     </node>
 
     <node pkg="machine_controller" exec="motor_controller" name="horizontal_controller" output="screen">
@@ -75,7 +75,7 @@
         <!-- トピックのremap -->
         <remap from="/target" to="/machine/target/horizontal"/>
         <remap from="/feedback" to="/ccb/feedback/horizontal"/>
-        <remap from="/target_currnet" to="/machine/current/horizontal"/>
+        <remap from="/target_current" to="/machine/current/horizontal"/>
     </node>
 
     <node pkg="machine_controller" exec="motor_controller" name="hand_controller" output="screen">
@@ -94,6 +94,6 @@
         <!-- トピックのremap -->
         <remap from="/target" to="/machine/target/hand"/>
         <remap from="/feedback" to="/ccb/feedback/hand"/>
-        <remap from="/target_currnet" to="/machine/current/hand"/>
+        <remap from="/target_current" to="/machine/current/hand"/>
     </node>
 </launch>
