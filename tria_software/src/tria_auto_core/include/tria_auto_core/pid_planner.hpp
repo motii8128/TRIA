@@ -7,6 +7,8 @@
 #include <tf2_ros/buffer.h>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 
+#include <std_msgs/msg/bool.hpp>
+
 #include "pid_utils.hpp"
 
 #include <cmath>
@@ -26,6 +28,7 @@ namespace tria_auto_core
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr target_pose_subscriber_;
 
         rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr twist_publisher_;
+        rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr status_publisher_;
 
         std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
@@ -37,6 +40,9 @@ namespace tria_auto_core
         geometry_msgs::msg::PoseStamped::SharedPtr target_pose_;
 
         rclcpp::Time last_time_;
+
+        double linear_threshold_;
+        double angular_threshold_;
     };
 
     double to_radian(geometry_msgs::msg::Quaternion q)

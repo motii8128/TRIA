@@ -26,6 +26,9 @@ namespace tria_auto_core
         conf.max_output = this->declare_parameter("angular.max_output", 1.0);
         rotation_pid_ = std::make_shared<PID>(conf);
 
+        linear_threshold_ = this->declare_parameter("linear_threshold", 0.01);
+        angular_threshold_ = this->declare_parameter("angular_threshold", 0.01);
+
 
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_unique<tf2_ros::TransformListener>(*tf_buffer_, this);
@@ -43,6 +46,7 @@ namespace tria_auto_core
         );
 
         twist_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::SystemDefaultsQoS());
+        status_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/status", rclcpp::SystemDefaultsQoS());
 
         target_pose_ = nullptr;
         last_time_ = this->get_clock()->now();
@@ -59,6 +63,8 @@ namespace tria_auto_core
         {
             auto transform_stamped = geometry_msgs::msg::TransformStamped();
             transform_stamped = tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
+            const auto cos_yaw = std::cos(to_radian(transform_stamped.transform.rotation));
+            const auto sin_yaw = std::sin(to_radian(transform_stamped.transform.rotation));
 
             auto cmd_msg = geometry_msgs::msg::Twist();
 
@@ -66,35 +72,25 @@ namespace tria_auto_core
             const auto dy = target_pose_->pose.position.y - transform_stamped.transform.translation.y;
             const auto dtheta = to_radian(target_pose_->pose.orientation) - to_radian(transform_stamped.transform.rotation);
 
+            const auto distance = std::sqrt(dx*dx + dy*dy);
+
             auto vx = 0.0;
             auto vy = 0.0;
-            if(std::abs(dx) > 0.08)
+            if(distance > linear_threshold_)
             {
                 vx = x_pid_->compute(
                     target_pose_->pose.position.x,
                     transform_stamped.transform.translation.x,
                     dt
                 );
-            }
-            else
-            {
-                vx = 0.0;
-            }
-
-            if(std::abs(dy) > 0.01)
-            {
                 vy = y_pid_->compute(
                     target_pose_->pose.position.y,
                     transform_stamped.transform.translation.y,
                     dt
                 );
             }
-            else
-            {
-                vy = 0.0;
-            }
 
-            if(std::abs(dtheta) > 0.01)
+            if(dtheta > angular_threshold_)
             {
                 cmd_msg.angular.z = rotation_pid_->compute(
                     to_radian(target_pose_->pose.orientation),
@@ -107,12 +103,15 @@ namespace tria_auto_core
                 cmd_msg.angular.z = 0.0;
             }
 
-            const auto cos_yaw = std::cos(to_radian(transform_stamped.transform.rotation));
-            const auto sin_yaw = std::sin(to_radian(transform_stamped.transform.rotation));
+            auto status_msg = std_msgs::msg::Bool();
+            status_msg.data = false;
+            if(distance < linear_threshold_ && dtheta < angular_threshold_)status_msg.data = true;
+            
             cmd_msg.linear.x = vx * cos_yaw + vy * sin_yaw;
             cmd_msg.linear.y = -vx * sin_yaw + vy * cos_yaw;
 
             twist_publisher_->publish(cmd_msg);
+            status_publisher_->publish(status_msg);
         }
         catch(const tf2::TransformException &ex)
         {
