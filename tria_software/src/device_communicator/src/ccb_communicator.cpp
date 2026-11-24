@@ -52,7 +52,6 @@ namespace device_communicator
         // ROS2の初期化
         machine_current_ = tria_msgs::msg::MachineCurrent();
         wheel_duty_ = tria_msgs::msg::WheelDuty();
-        sensor_feedback_ = tria_msgs::msg::SensorFeedback();
 
         // UDP通信をするタイマーを初期化
         using namespace std::chrono_literals;
@@ -76,8 +75,6 @@ namespace device_communicator
         );
 
         //　パブリッシャーの初期化
-        feedback_publisher_ = this->create_publisher<tria_msgs::msg::SensorFeedback>("/ccb/sensor_feedback", rclcpp::SystemDefaultsQoS());
-
         vertical_feedback_publisher_ = this->create_publisher<tria_msgs::msg::MotorFeedback>("/ccb/feedback/vertical", rclcpp::SystemDefaultsQoS());
         horizontal_feedback_publisher_ = this->create_publisher<tria_msgs::msg::MotorFeedback>("/ccb/feedback/horizontal", rclcpp::SystemDefaultsQoS());
         hand_feedback_publisher_ = this->create_publisher<tria_msgs::msg::MotorFeedback>("/ccb/feedback/hand", rclcpp::SystemDefaultsQoS());
@@ -122,20 +119,17 @@ namespace device_communicator
                     case 1:
                         // CAN IDが１なら水平移動のモーターであるので
                         robomaster_[0].update(sensor.velocity(), sensor.angle(), sensor.torque());
-                        sensor_feedback_.horizontal = robomaster_[0].to_ROS2();
-                        horizontal_feedback_publisher_->publish(sensor_feedback_.horizontal);
+                        horizontal_feedback_publisher_->publish(robomaster_[0].to_ROS2());
                         break;
                     case 2:
                         // CAN IDが２なら上下移動のモーターであるので
                         robomaster_[1].update(sensor.velocity(), sensor.angle(), sensor.torque());
-                        sensor_feedback_.vertical = robomaster_[1].to_ROS2();
-                        vertical_feedback_publisher_->publish(sensor_feedback_.vertical);
+                        vertical_feedback_publisher_->publish(robomaster_[1].to_ROS2());
                         break;
                     case 3:
                         // CAN IDが３ならハンドのモーターであるので
                         robomaster_[2].update(sensor.velocity(), sensor.angle(), sensor.torque());
-                        sensor_feedback_.hand = robomaster_[2].to_ROS2();
-                        hand_feedback_publisher_->publish(sensor_feedback_.hand);
+                        hand_feedback_publisher_->publish(robomaster_[2].to_ROS2());
                         break;
 
                     default:
@@ -148,8 +142,6 @@ namespace device_communicator
                     RCLCPP_INFO(this->get_logger(), "CCBとのコネクションが正常です。");
                     udp_success_count_ = 0;
                 }
-
-                feedback_publisher_->publish(sensor_feedback_);
             }
             else
             {

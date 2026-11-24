@@ -1,7 +1,6 @@
 #include <rclcpp/rclcpp.hpp>
 
 // ROS2 カスタムメッセージ
-#include <tria_msgs/msg/sensor_feedback.hpp>
 #include <tria_msgs/msg/motor_feedback.hpp>
 #include <tria_msgs/msg/machine_current.hpp>
 #include <tria_msgs/msg/wheel_duty.hpp>
@@ -47,7 +46,6 @@ namespace device_communicator
         }
 
         rclcpp::TimerBase::SharedPtr timer_;
-        rclcpp::Publisher<tria_msgs::msg::SensorFeedback>::SharedPtr feedback_publisher_;
         rclcpp::Publisher<tria_msgs::msg::MotorFeedback>::SharedPtr vertical_feedback_publisher_;
         rclcpp::Publisher<tria_msgs::msg::MotorFeedback>::SharedPtr horizontal_feedback_publisher_;
         rclcpp::Publisher<tria_msgs::msg::MotorFeedback>::SharedPtr hand_feedback_publisher_;
@@ -58,7 +56,6 @@ namespace device_communicator
         tria_msgs::msg::MachineCurrent machine_current_;
         tria_msgs::msg::WheelDuty wheel_duty_;
 
-        tria_msgs::msg::SensorFeedback sensor_feedback_;
         // ロボマスのエンコーダ処理
         RoboMaster robomaster_[3];
 
