@@ -30,18 +30,12 @@ namespace machine_controller
         target_position_ = 0.0;
 
         target_current_publisher_ = this->create_publisher<std_msgs::msg::Int16>("/target_current", rclcpp::SystemDefaultsQoS());
-        status_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/status", rclcpp::SystemDefaultsQoS());
 
         using std::placeholders::_1;
 
         using namespace std::chrono_literals;
         timer_ = this->create_wall_timer(1ms, std::bind(&CascadePositionController::timer_callback, this));
 
-        target_position_subscriber_ = this->create_subscription<std_msgs::msg::Float64>(
-            "/target",
-            rclcpp::SystemDefaultsQoS(),
-            std::bind(&CascadePositionController::target_position_callback, this, _1)
-        );
 
         motor_feedback_subscriber_ = this->create_subscription<tria_msgs::msg::MotorFeedback>(
             "/feedback",
@@ -49,6 +43,16 @@ namespace machine_controller
             std::bind(&CascadePositionController::motor_feedback_callback, this, _1)
         );
 
+        action_server_ = rclcpp_action::create_server<MachineAction>(
+            this,
+            "machine_action",
+            std::bind(&CascadePositionController::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
+            std::bind(&CascadePositionController::handle_cancel, this, std::placeholders::_1),
+            std::bind(&CascadePositionController::handle_accepted, this, std::placeholders::_1)
+        );
+
+        active_goal_handle_ = nullptr;
+        last_time_ = this->now();
         RCLCPP_INFO(this->get_logger(), "%sを起動しました", this->get_name());
     }
 
@@ -57,41 +61,83 @@ namespace machine_controller
         // センサーの値が来てないなら制御を行わない
         if(motor_feedback_ == nullptr) return;
 
-        const auto delta_position = target_position_ - motor_feedback_->position;
+        const auto now_time = this->now();
+        const auto dt = (now_time - last_time_).seconds();
+
+        // アクティブなGoalがない場合は電流０で待機
+        if(active_goal_handle_ == nullptr || !active_goal_handle_->is_active())
+        {
+            auto current_msg = std_msgs::msg::Int16();
+            current_msg.data = 0;
+            target_current_publisher_->publish(current_msg);
+            return;
+        }
+
+        const auto now_position = motor_feedback_->position;
+        const auto abs_error = std::abs(target_position_ - now_position);
+
+        const auto current_cmd = cascade_->compute(
+            target_position_, 
+            motor_feedback_->position,
+            motor_feedback_->rpm,
+            dt
+        );
 
         auto current_msg = std_msgs::msg::Int16();
-        auto status_msg = std_msgs::msg::Bool();
+        current_msg.data = static_cast<int16_t>(std::llround(current_cmd));
+        target_current_publisher_->publish(current_msg);
 
-        if(delta_position < goal_threshold_)
+        if(abs_error < goal_threshold_)
         {
+            auto current_msg = std_msgs::msg::Int16();
             current_msg.data = 0;
-            status_msg.data = true;
             target_current_publisher_->publish(current_msg);
-            status_publisher_->publish(status_msg);
-        }
-        else
-        {
-            current_msg.data = (int16_t)cascade_->compute(
-                target_position_,
-                motor_feedback_->position,
-                motor_feedback_->rpm,
-                0.001
-            );
-            status_msg.data = false;
 
-            target_current_publisher_->publish(current_msg);
-            status_publisher_->publish(status_msg);
+            auto result = std::make_shared<MachineAction::Result>();
+            result->error = abs_error;
+            active_goal_handle_->succeed(result);
+            active_goal_handle_ = nullptr;
+
+            RCLCPP_INFO(this->get_logger(), "制御完了 誤差:%.4f", abs_error);
         }
     }
 
-    void CascadePositionController::target_position_callback(const std_msgs::msg::Float64::SharedPtr msg)
-    {     
-        target_position_ = msg->data;
-    }
+    
 
     void CascadePositionController::motor_feedback_callback(const tria_msgs::msg::MotorFeedback::SharedPtr msg)
     {
         motor_feedback_ = msg;
+    }
+
+
+    // Goalを受信した際に呼び出される
+    rclcpp_action::GoalResponse CascadePositionController::handle_goal(
+        const rclcpp_action::GoalUUID & /*uuid*/,
+        std::shared_ptr<const MachineAction::Goal> goal
+    )
+    {
+        if (!std::isfinite(goal->target_position)) {
+            RCLCPP_WARN(this->get_logger(), "意味不明な目標位置なのでGoalを棄却しました");
+            return rclcpp_action::GoalResponse::REJECT;
+        }
+        
+        return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+    }
+
+    // GoalをAcceptした際に呼び出される
+    void CascadePositionController::handle_accepted(const std::shared_ptr<GoalHandleMachine> goal_handle)
+    {
+        active_goal_handle_ = goal_handle;
+        target_position_ = active_goal_handle_->get_goal()->target_position;
+
+        RCLCPP_INFO(this->get_logger(), "新たな目標位置を取得しました: %.4f", target_position_);
+    }
+
+    // キャンセルを受信したら呼び出される
+    rclcpp_action::CancelResponse CascadePositionController::handle_cancel(const std::shared_ptr<GoalHandleMachine>)
+    {
+        RCLCPP_INFO(this->get_logger(), "キャンセルのリクエストを受け付けました");
+        return rclcpp_action::CancelResponse::ACCEPT;
     }
 }
 
