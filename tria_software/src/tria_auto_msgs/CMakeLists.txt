@@ -10,6 +10,8 @@ find_package(geometry_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Task.msg"
+  "action/Machine.action"
+  "action/Wheel.action"
   DEPENDENCIES builtin_interfaces geometry_msgs
 )
 
