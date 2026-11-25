@@ -2,7 +2,9 @@
 geometry_msgs/PoseStamped pose
 ---
 # Result
-float32 error
+float32 delta_theta
+float32 distance
 ---
 # Feedback
-float32 now_error
+float32 delta_theta
+float32 distance

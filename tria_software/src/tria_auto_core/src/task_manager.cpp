@@ -4,36 +4,25 @@ namespace tria_auto_core
 {
     TaskManager::TaskManager() : Node("tria_auto_core")
     {
-        // パラメータの取得
-        position_goal_threshold_ = this->declare_parameter("position_goal_threshold", 0.01);
-        arm_goal_threshold_ = this->declare_parameter("arm_goal_threshold", 0.01);
-        
+        // パラメータの取得  
+        enable_arm_distance_ = this->declare_parameter("enable_arm_distance", 0.3);
         collect_horizontal_pos_ = this->declare_parameter("collect_horizontal_pos", -1.8);
         collect_vertical_pos_ = this->declare_parameter("collect_vertical_pos", -1.54);
-        enable_arm_distance_ = this->declare_parameter("enable_arm_distance", 0.3);
-
-        // ハンド系
-        hand_goal_threshold_ = this->declare_parameter("hand_goal_threshold", 0.01);
-        torque_threshold_ = this->declare_parameter("torque_threshold", 1000);
         collect_hand_pos_ = this->declare_parameter("collect_hand_pos", -0.23);
-
         arm_length_ = this->declare_parameter("arm_length", 0.3);
 
         // 変数の初期化
         task_ = std::vector<tria_auto_msgs::msg::Task::SharedPtr>();
         task_.clear();
-        
         target_pose_ = geometry_msgs::msg::PoseStamped();
-        target_machine_position_ = MachineTargetPosition();
-
-        sensor_feedback_ = nullptr;
-        state_ = State::WAIT;
+        machine_target_ = MachineTarget{0.0, 0.0, 0.0};
         log_count_ = 0;
-        hand_ok_count_ = 0;
+        current_delta_theta_ = 0.0;
+        current_distance_ = 0.0;
 
-        // TFまわりの初期化
-        tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
-        tf_listener_ = std::make_unique<tf2_ros::TransformListener>(*tf_buffer_, this);
+        state_ = AutoState::WAIT;
+
+        comp_manager_ = ComponentManager();
 
         // サブスクライバの初期化
         using std::placeholders::_1;
@@ -43,23 +32,21 @@ namespace tria_auto_core
             std::bind(&TaskManager::task_callback, this, _1)
         );
 
-        sensor_feedback_subscriber_ = this->create_subscription<tria_msgs::msg::SensorFeedback>(
-            "/ccb/sensor_feedback",
-            rclcpp::SystemDefaultsQoS(),
-            std::bind(&TaskManager::sensor_feedback_callback, this, _1)
-        );
-
         // タイマーの初期化
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(1), 
             std::bind(&TaskManager::timer_callback, this)
         );
 
-        // パブリッシャーの初期化
-        vertical_target_publisher_ = this->create_publisher<std_msgs::msg::Float64>("/machine/target/vertical", rclcpp::SystemDefaultsQoS());
-        horizontal_target_publisher_ = this->create_publisher<std_msgs::msg::Float64>("/machine/target/horizontal", rclcpp::SystemDefaultsQoS());
-        hand_target_publisher_ = this->create_publisher<std_msgs::msg::Float64>("/machine/target/hand", rclcpp::SystemDefaultsQoS());
-        pose_stamped_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/target_pose", rclcpp::SystemDefaultsQoS());
+        // ActionClientの初期化
+        wheel_action_client_ = rclcpp_action::create_client<WheelAction>(this, "/action/wheel");
+        vertical_action_client_ = rclcpp_action::create_client<MachineAction>(this, "action/machine/vertical");
+        horizontal_action_client_ = rclcpp_action::create_client<MachineAction>(this, "action/machine/horizontal");
+        hand_action_client_ = rclcpp_action::create_client<MachineAction>(this, "action/machine/hand");
+
+        // TFの初期化
+        tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+        tf_listener_ = std::make_unique<tf2_ros::TransformListener>(*tf_buffer_, this);
     }
 
     void TaskManager::timer_callback()
@@ -67,53 +54,38 @@ namespace tria_auto_core
         const auto enable_log = log_count_ > 1000;
         if(enable_log)log_count_ = 0;
 
-        try
+        if(state_ == AutoState::WAIT)
         {
-            auto current_position = tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
-
-            // 状態に応じて別の関数を実行する
-            if(state_ == State::WAIT)
-            {
-                new_task(enable_log, current_position);
-            }
-            else
-            {
-                progress_task(enable_log, current_position);
-            }
+            new_task(enable_log);
         }
-        catch(const tf2::TransformException &ex)
+        else
         {
-            if(enable_log)RCLCPP_WARN(this->get_logger(), "自己位置を取得できません");
+            progress_task(enable_log);
         }
 
         log_count_++;
     }
 
-    void TaskManager::new_task(bool enable_log, const geometry_msgs::msg::TransformStamped current_position)
+    void TaskManager::new_task(bool enable_log)
     {
         if(task_.empty())
         {
             if(enable_log)RCLCPP_INFO(this->get_logger(), "タスクがありません。");
 
-            target_machine_position_.horizontal_position = 0.0;
-            target_machine_position_.vertical_position = 0.0;
-
-            auto vertical_msg = std_msgs::msg::Float64();
-            vertical_msg.data = target_machine_position_.vertical_position;
-            auto horizontal_msg = std_msgs::msg::Float64();
-            horizontal_msg.data = target_machine_position_.horizontal_position;
-
-            vertical_target_publisher_->publish(vertical_msg);
-            horizontal_target_publisher_->publish(horizontal_msg);
-
             return;
         }
 
-        if(sensor_feedback_ == nullptr)
+        auto current_position = geometry_msgs::msg::TransformStamped();
+        try
         {
-            if(enable_log)RCLCPP_INFO(this->get_logger(), "機構位置を取得できません。");
+            current_position = tf_buffer_->lookupTransform("map", "base_link", tf2::TimePointZero);
+        }
+        catch(const tf2::TransformException &)
+        {
+            if(enable_log)RCLCPP_WARN(this->get_logger(), "自己位置を取得できません");
             return;
         }
+        
 
         // 進行中のタスクに先頭のタスクを追加し、状態を「進行中」に変更する
         const auto progress_task = task_.front();
@@ -131,31 +103,21 @@ namespace tria_auto_core
         target_pose_.pose.position.y = current_position.transform.translation.y + std::sin(target_angle) * (distance - arm_length_);
         tf2::Quaternion q;
         q.setRPY(0.0, 0.0, target_angle - M_PI / 2.0);
-        // q.setRPY(0.0, 0.0, 0.0);
         target_pose_.pose.orientation.x = q.x();
         target_pose_.pose.orientation.y = q.y();
         target_pose_.pose.orientation.z = q.z();
         target_pose_.pose.orientation.w = q.w();
 
-        
-        switch (progress_task->purpose)
+        if(progress_task->purpose == tria_auto_msgs::msg::Task::COLLECT)
         {
-        case tria_auto_msgs::msg::Task::COLLECT:
-            target_machine_position_.hand_position = 0.00000;
-            target_machine_position_.horizontal_position = collect_horizontal_pos_;
-            target_machine_position_.vertical_position = collect_vertical_pos_;
-            break;
-        
-        case tria_auto_msgs::msg::Task::RELEASE:
-            target_machine_position_.hand_position = collect_hand_pos_;
-            target_machine_position_.horizontal_position = collect_horizontal_pos_;
-            target_machine_position_.vertical_position = 0.0;
-
-        case tria_auto_msgs::msg::Task::CALIBRATION:
-            target_machine_position_.hand_position = 0.00000;
-            target_machine_position_.horizontal_position = 0.0;
-            target_machine_position_.vertical_position = 0.0;
-
+            state_ = AutoState::COLLECT;
+        }
+        else if(progress_task->purpose == tria_auto_msgs::msg::Task::RELEASE)
+        {
+            state_ = AutoState::RELEASE;
+        }
+        else if(progress_task->purpose == tria_auto_msgs::msg::Task::CALIBRATION)
+        {
             target_pose_.pose.position.x = 0.0;
             target_pose_.pose.position.y = 0.0;
             q.setRPY(0.0, 0.0, 0.0);
@@ -164,129 +126,92 @@ namespace tria_auto_core
             target_pose_.pose.orientation.z = q.z();
             target_pose_.pose.orientation.w = q.w();
 
-            state_ = State::CALIBRATION;
-            return;
-
-        default:
-            break;
+            state_ = AutoState::CALIBRATION;
         }
 
-        state_ = State::POSITIONING;
+        comp_manager_.reset();
     }
 
-    void TaskManager::progress_task(bool enable_log, const geometry_msgs::msg::TransformStamped current_position)
+    void TaskManager::progress_task(bool enable_log)
     {
-        // 現在位置と目標位置の距離
-        const auto dx = target_pose_.pose.position.x - current_position.transform.translation.x;
-        const auto dy = target_pose_.pose.position.y - current_position.transform.translation.y;
-        const auto distance = std::sqrt(dx*dx + dy*dy);
+        auto vertical_goal_msg = MachineAction::Goal();
+        auto horizontal_goal_msg = MachineAction::Goal();
+        auto hand_goal_msg = MachineAction::Goal();
 
-        // 角度の差
-        const auto dtheta = std::abs(to_radian(target_pose_.pose.orientation) - to_radian(current_position.transform.rotation));
-
-        // 現在と目標の機構位置の差
-        const auto dist_hand = target_machine_position_.hand_position - sensor_feedback_->hand.position;
-        const auto dist_horizontal = target_machine_position_.horizontal_position - sensor_feedback_->horizontal.position;
-        const auto dist_vertical = target_machine_position_.vertical_position - sensor_feedback_->vertical.position;
-        const auto arm_distance = std::sqrt(dist_horizontal*dist_horizontal + dist_vertical * dist_vertical);
-
-        switch (state_)
+        if(state_ == AutoState::COLLECT)
         {
-            case State::POSITIONING:
-                if(enable_log)RCLCPP_INFO(this->get_logger(), "\t位置決めを行っています。距離: %f, アーム距離: %f", distance, arm_distance);
-                if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_)
-                {
-                    hand_ok_count_ = 0;
-                    state_ = State::COLLECT_OR_RELEASE;
-                    break;
-                }
+            vertical_goal_msg.target_position = collect_vertical_pos_;
+            horizontal_goal_msg.target_position = collect_horizontal_pos_;
+            hand_goal_msg.target_position = collect_hand_pos_;
+        }
+        else if(state_ == AutoState::RELEASE)
+        {
+            vertical_goal_msg.target_position = 0.0;
+            horizontal_goal_msg.target_position = collect_horizontal_pos_;
+            hand_goal_msg.target_position = 0.0;
+        }
+        else if(state_ == AutoState::CALIBRATION)
+        {
+            vertical_goal_msg.target_position = 0.0;
+            horizontal_goal_msg.target_position = 0.0;
+            hand_goal_msg.target_position = 0.0;
+        }
+        
+        // 足回りの制御を開始していないなら開始
+        if(!comp_manager_.wheel_started)
+        {
+            RCLCPP_INFO(this->get_logger(), "回収を開始します");
+            auto wheel_goal_msg = WheelAction::Goal();
+            wheel_goal_msg.pose = target_pose_;
+            wheel_action_client_->async_send_goal(wheel_goal_msg);
+            RCLCPP_INFO(this->get_logger(), "足回りの目標位置を送信しました");
+            comp_manager_.wheel_started = true;
+        }
 
-                if(distance < enable_arm_distance_ && dtheta < enable_arm_distance_)
-                {
-                    auto vertical_msg = std_msgs::msg::Float64();
-                    vertical_msg.data = target_machine_position_.vertical_position;
-                    auto horizontal_msg = std_msgs::msg::Float64();
-                    horizontal_msg.data = target_machine_position_.horizontal_position;
+        const auto distance_is_ok = current_distance_ < enable_arm_distance_;
+        const auto delta_theta_is_ok = current_delta_theta_ < enable_arm_distance_;
 
-                    vertical_target_publisher_->publish(vertical_msg);
-                    horizontal_target_publisher_->publish(horizontal_msg);
-                }
-                pose_stamped_publisher_->publish(target_pose_);
-                break;
+        // 足回りの目標との誤差が閾値内かつ水平移動機構の制御を開始していないなら
+        if(!comp_manager_.horizontal_started && distance_is_ok && delta_theta_is_ok)
+        {
+            horizontal_action_client_->async_send_goal(horizontal_goal_msg);
+            RCLCPP_INFO(this->get_logger(), "水平移動機構の目標位置を送信しました");
+            comp_manager_.horizontal_started = true;
+        }
 
-            case State::COLLECT_OR_RELEASE:
-                // 上昇機構の目標値が０でないなら回収であると判定する
-                if(target_machine_position_.vertical_position != 0.0)
-                {
-                    if(enable_log)RCLCPP_INFO(this->get_logger(), "\t回収を行っています。");
+        // 水平移動機構まで制御が終了したら、昇降機構の動作を許可する
+        if(!comp_manager_.vertical_started && comp_manager_.horizontal_reached)
+        {
+            vertical_action_client_->async_send_goal(vertical_goal_msg);
+            RCLCPP_INFO(this->get_logger(), "昇降機構、ハンド機構の目標位置を送信しました");
+            comp_manager_.vertical_started = true;
+        }
 
-                    if(dist_hand < hand_goal_threshold_)
-                    {
-                        hand_ok_count_++;
-                    }
-                    if(hand_ok_count_ > 1000)
-                    {
-                        RCLCPP_INFO(this->get_logger(), "\t回収と判定しました。");
-                        state_ = WAIT;
-                        break;
-                    }
+        // 昇降機構まで制御が終了したら、ハンド機構の動作を許可する
+        if(!comp_manager_.hand_started && comp_manager_.vertical_reached)
+        {
+            hand_action_client_->async_send_goal(hand_goal_msg);
+            RCLCPP_INFO(this->get_logger(), "ハンド機構の目標位置を送信しました");
+            comp_manager_.hand_started = true;
+        }
 
-                    target_machine_position_.hand_position = collect_hand_pos_;
+        const auto collect_or_release = state_==AutoState::COLLECT || state_==AutoState::RELEASE;
 
-                    auto hand_msg = std_msgs::msg::Float64();
-                    hand_msg.data = target_machine_position_.hand_position;
-                    hand_target_publisher_->publish(hand_msg);
-                }
-                else
-                {
-                    if(enable_log)RCLCPP_INFO(this->get_logger(), "\t設置を行っています。距離: %f, アーム距離: %f", distance, arm_distance);
+        // 終了判定
+        if(comp_manager_.complete())
+        {
+            comp_manager_.reset();
+            // 回収もしくは設置モードなら、ハンド以外は原点に戻して終了する
+            if(collect_or_release)
+            {
+                auto goal_msg = MachineAction::Goal();
+                goal_msg.target_position = 0.0;
 
+                vertical_action_client_->async_send_goal(goal_msg);
+                horizontal_action_client_->async_send_goal(goal_msg);
+            }
 
-                    if(dist_hand < hand_goal_threshold_)
-                    {
-                        hand_ok_count_++;
-                    }
-                    if(hand_ok_count_ > 1000)
-                    {
-                        RCLCPP_INFO(this->get_logger(), "\t設置と判定しました。");
-                        state_ = WAIT;
-                        break;
-                    }
-                    target_machine_position_.hand_position = 0.0;
-                    
-                    auto hand_msg = std_msgs::msg::Float64();
-                    hand_msg.data = target_machine_position_.hand_position;
-                    hand_target_publisher_->publish(hand_msg);
-                }
-                
-                break;
-            
-            case State::CALIBRATION:
-                {
-                    pose_stamped_publisher_->publish(target_pose_);
-                    auto vertical_msg = std_msgs::msg::Float64();
-                    vertical_msg.data = target_machine_position_.vertical_position;
-                    auto horizontal_msg = std_msgs::msg::Float64();
-                    horizontal_msg.data = target_machine_position_.horizontal_position;
-                    auto hand_msg = std_msgs::msg::Float64();
-                    hand_msg.data = target_machine_position_.hand_position;
-
-                    vertical_target_publisher_->publish(vertical_msg);
-                    horizontal_target_publisher_->publish(horizontal_msg);
-                    hand_target_publisher_->publish(hand_msg);
-
-                    if(distance < position_goal_threshold_ && arm_distance < arm_goal_threshold_ && dist_hand < hand_goal_threshold_)
-                    {
-                        RCLCPP_INFO(this->get_logger(), "\tキャリブレーション完了");
-                        state_ = WAIT;
-                        break;
-                    }
-
-                    break;
-                }
-
-            default:
-                break;
+            state_ = AutoState::WAIT;
         }
     }
 
@@ -294,11 +219,6 @@ namespace tria_auto_core
     {
         task_.push_back(msg);
         RCLCPP_INFO(this->get_logger(), "タスクを受信しました。 %s", to_string(msg).c_str());
-    }
-
-    void TaskManager::sensor_feedback_callback(const tria_msgs::msg::SensorFeedback::SharedPtr msg)
-    {
-        sensor_feedback_ = msg;
     }
 }
 

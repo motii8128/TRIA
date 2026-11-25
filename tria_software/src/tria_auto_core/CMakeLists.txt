@@ -3,6 +3,7 @@ project(tria_auto_core)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tria_msgs REQUIRED)
 find_package(tria_auto_msgs REQUIRED)
@@ -15,7 +16,7 @@ target_include_directories(task_manager
   SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
 )
-ament_target_dependencies(task_manager rclcpp tria_msgs geometry_msgs tria_auto_msgs tf2_ros)
+ament_target_dependencies(task_manager rclcpp  rclcpp_action tria_msgs geometry_msgs tria_auto_msgs tf2_ros)
 
 # PidPlanner
 add_executable(pid_planner src/pid_planner.cpp)
@@ -24,7 +25,7 @@ target_include_directories(pid_planner
   SYSTEM PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
 )
-ament_target_dependencies(pid_planner rclcpp geometry_msgs tf2_ros)
+ament_target_dependencies(pid_planner rclcpp rclcpp_action geometry_msgs tf2_ros tria_auto_msgs)
 
 install(TARGETS
   task_manager

@@ -33,11 +33,12 @@ namespace tria_auto_core
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_unique<tf2_ros::TransformListener>(*tf_buffer_, this);
 
-        using std::placeholders::_1;
-        target_pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-            "/target_pose",
-            rclcpp::SystemDefaultsQoS(),
-            std::bind(&PidPlanner::target_pose_callback, this, _1)
+        action_server_ = rclcpp_action::create_server<WheelAction>(
+            this,
+            "wheel_action",
+            std::bind(&PidPlanner::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
+            std::bind(&PidPlanner::handle_cancel, this, std::placeholders::_1),
+            std::bind(&PidPlanner::handle_accepted, this, std::placeholders::_1)
         );
 
         timer_ = this->create_wall_timer(
@@ -46,18 +47,27 @@ namespace tria_auto_core
         );
 
         twist_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::SystemDefaultsQoS());
-        status_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/status", rclcpp::SystemDefaultsQoS());
 
-        target_pose_ = nullptr;
+        target_pose_ = geometry_msgs::msg::PoseStamped();
+        active_goal_handle_ = nullptr;
         last_time_ = this->get_clock()->now();
     }
 
     void PidPlanner::timer_callback()
     {
-        if(target_pose_ == nullptr) return;
-
         const auto now = this->get_clock()->now();
-        const auto dt = (now - last_time_).seconds();  
+        const auto dt = (now - last_time_).seconds();
+        
+        if(active_goal_handle_ == nullptr || !active_goal_handle_->is_active())
+        {
+            auto cmd_msg = geometry_msgs::msg::Twist();
+            cmd_msg.linear.x = 0.0;
+            cmd_msg.linear.y = 0.0;
+            cmd_msg.angular.z = 0.0;
+
+            twist_publisher_->publish(cmd_msg);
+            return;
+        }
 
         try
         {
@@ -68,50 +78,56 @@ namespace tria_auto_core
 
             auto cmd_msg = geometry_msgs::msg::Twist();
 
-            const auto dx = target_pose_->pose.position.x - transform_stamped.transform.translation.x;
-            const auto dy = target_pose_->pose.position.y - transform_stamped.transform.translation.y;
-            const auto dtheta = to_radian(target_pose_->pose.orientation) - to_radian(transform_stamped.transform.rotation);
+            const auto dx = target_pose_.pose.position.x - transform_stamped.transform.translation.x;
+            const auto dy = target_pose_.pose.position.y - transform_stamped.transform.translation.y;
+            const auto dtheta = to_radian(target_pose_.pose.orientation) - to_radian(transform_stamped.transform.rotation);
 
             const auto distance = std::sqrt(dx*dx + dy*dy);
 
-            auto vx = 0.0;
-            auto vy = 0.0;
-            if(distance > linear_threshold_)
-            {
-                vx = x_pid_->compute(
-                    target_pose_->pose.position.x,
-                    transform_stamped.transform.translation.x,
-                    dt
-                );
-                vy = y_pid_->compute(
-                    target_pose_->pose.position.y,
-                    transform_stamped.transform.translation.y,
-                    dt
-                );
-            }
+            auto vx = x_pid_->compute(
+                target_pose_.pose.position.x,
+                transform_stamped.transform.translation.x,
+                dt
+            );
+            auto vy = y_pid_->compute(
+                target_pose_.pose.position.y,
+                transform_stamped.transform.translation.y,
+                dt
+            );
 
-            if(dtheta > angular_threshold_)
-            {
-                cmd_msg.angular.z = rotation_pid_->compute(
-                    to_radian(target_pose_->pose.orientation),
-                    to_radian(transform_stamped.transform.rotation),
-                    dt
-                );
-            }
-            else
-            {
-                cmd_msg.angular.z = 0.0;
-            }
-
-            auto status_msg = std_msgs::msg::Bool();
-            status_msg.data = false;
-            if(distance < linear_threshold_ && dtheta < angular_threshold_)status_msg.data = true;
+            cmd_msg.angular.z = rotation_pid_->compute(
+                to_radian(target_pose_.pose.orientation),
+                to_radian(transform_stamped.transform.rotation),
+                dt
+            );
             
             cmd_msg.linear.x = vx * cos_yaw + vy * sin_yaw;
             cmd_msg.linear.y = -vx * sin_yaw + vy * cos_yaw;
 
             twist_publisher_->publish(cmd_msg);
-            status_publisher_->publish(status_msg);
+
+            auto feedback = std::make_shared<WheelAction::Feedback>();
+            feedback->distance = distance;
+            feedback->delta_theta = dtheta;
+            active_goal_handle_->publish_feedback(feedback);
+
+            if(distance < linear_threshold_ && dtheta < angular_threshold_)
+            {
+                auto cmd_msg = geometry_msgs::msg::Twist();
+                cmd_msg.linear.x = 0.0;
+                cmd_msg.linear.y = 0.0;
+                cmd_msg.angular.z = 0.0;
+
+                twist_publisher_->publish(cmd_msg);
+
+                auto result = std::make_shared<WheelAction::Result>();
+                result->distance = distance;
+                result->delta_theta = dtheta;
+                active_goal_handle_->succeed(result);
+                active_goal_handle_ = nullptr;
+
+                RCLCPP_INFO(this->get_logger(), "制御完了 誤差:%.4f", distance);
+            }
         }
         catch(const tf2::TransformException &ex)
         {
@@ -121,9 +137,28 @@ namespace tria_auto_core
         last_time_ = now;
     }
 
-    void PidPlanner::target_pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+    rclcpp_action::GoalResponse PidPlanner::handle_goal(
+        const rclcpp_action::GoalUUID & /*uuid*/,
+        std::shared_ptr<const WheelAction::Goal> goal
+    )
+    {        
+        return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+    }
+
+    // GoalをAcceptした際に呼び出される
+    void PidPlanner::handle_accepted(const std::shared_ptr<GoalHandleWheel> goal_handle)
     {
-        target_pose_ = msg;
+        active_goal_handle_ = goal_handle;
+        target_pose_ = active_goal_handle_->get_goal()->pose;
+
+        RCLCPP_INFO(this->get_logger(), "新たな目標位置を取得しました");
+    }
+
+    // キャンセルを受信したら呼び出される
+    rclcpp_action::CancelResponse PidPlanner::handle_cancel(const std::shared_ptr<GoalHandleWheel>)
+    {
+        RCLCPP_INFO(this->get_logger(), "キャンセルのリクエストを受け付けました");
+        return rclcpp_action::CancelResponse::ACCEPT;
     }
 }
 

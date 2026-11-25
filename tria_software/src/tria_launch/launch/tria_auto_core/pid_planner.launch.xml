@@ -20,7 +20,7 @@
     <param name="angular_threshold" value="0.02"/>
 
     <!-- トピックのremap -->
-    <remap from="/target_pose" to="/target_pose"/>
+    <remap from="/wheel_action" to="/action/wheel"/>
     <remap from="/cmd_vel" to="/cmd_vel"/>
   </node>
 </launch>
