@@ -18,46 +18,54 @@ namespace device_communicator
 
         void update(std::int16_t velocity_in, std::int16_t angle_count, std::int16_t torque_in)
         {
-            velocity = static_cast<float>(velocity_in);
+            if(first_value)
+            {
+                last_count_ = angle_count / 100.0;
+                first_value = false;
+            }
+            velocity = velocity_in;
+            position = angle_count / 100.0 - last_count_;
             torque = torque_in;
+            // velocity = static_cast<float>(velocity_in);
+            // torque = torque_in;
 
-            if (last_count_ == -1)
-            {
-                last_count_ = angle_count;
-                position = 0.0f;
-            }
-            else
-            {
-                // int で計算するのでオーバーフローしない
-                int delta_count = static_cast<int>(angle_count) - static_cast<int>(last_count_);
+            // if (last_count_ == -1)
+            // {
+            //     last_count_ = angle_count;
+            //     position = 0.0f;
+            // }
+            // else
+            // {
+            //     // int で計算するのでオーバーフローしない
+            //     int delta_count = static_cast<int>(angle_count) - static_cast<int>(last_count_);
 
-                last_count_ = angle_count;
+            //     last_count_ = angle_count;
 
-                if (delta_count > 4096)
-                {
-                    if(velocity_in > 0)
-                    {
+            //     if (delta_count > 4096)
+            //     {
+            //         if(velocity_in > 0)
+            //         {
 
-                    }
-                    else
-                    {
-                        delta_count -= 8192;
-                    }
-                }
-                else if (delta_count < -4096)
-                {
-                    if(velocity_in < 0)
-                    {
+            //         }
+            //         else
+            //         {
+            //             delta_count -= 8192;
+            //         }
+            //     }
+            //     else if (delta_count < -4096)
+            //     {
+            //         if(velocity_in < 0)
+            //         {
 
-                    }
-                    else
-                    {
-                        delta_count += 8192;
-                    }
-                }
+            //         }
+            //         else
+            //         {
+            //             delta_count += 8192;
+            //         }
+            //     }
 
-                position += static_cast<float>(delta_count) / 8192.0f;
-            }
+            //     position += static_cast<float>(delta_count) / 8192.0f;
+            // }
         }
 
         tria_msgs::msg::MotorFeedback to_ROS2()
@@ -72,7 +80,8 @@ namespace device_communicator
         }
 
     private:
-        std::int16_t last_count_ = -1;
+        double last_count_ = -1.0;
+        bool first_value = true;
     };
 }
 

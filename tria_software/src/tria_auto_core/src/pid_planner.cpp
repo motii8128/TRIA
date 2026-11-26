@@ -80,7 +80,7 @@ namespace tria_auto_core
 
             const auto dx = target_pose_.pose.position.x - transform_stamped.transform.translation.x;
             const auto dy = target_pose_.pose.position.y - transform_stamped.transform.translation.y;
-            const auto dtheta = to_radian(target_pose_.pose.orientation) - to_radian(transform_stamped.transform.rotation);
+            const auto dtheta = std::abs(to_radian(target_pose_.pose.orientation) - to_radian(transform_stamped.transform.rotation));
 
             const auto distance = std::sqrt(dx*dx + dy*dy);
 

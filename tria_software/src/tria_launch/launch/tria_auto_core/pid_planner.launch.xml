@@ -7,7 +7,7 @@
     <param name="linear.d_gain" value="0.0"/>
 
     <param name="linear.max_integral" value="0.1"/>
-    <param name="linear.max_output" value="0.25"/>
+    <param name="linear.max_output" value="0.2"/>
 
     <param name="angular.p_gain" value="1.0"/>
     <param name="angular.i_gain" value="0.0"/>

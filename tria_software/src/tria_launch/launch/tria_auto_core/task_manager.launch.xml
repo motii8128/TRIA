@@ -3,11 +3,11 @@
   <node pkg="tria_auto_core" exec="task_manager" output="screen">
     <!-- パラメータを直接指定 -->
     <!-- 回収するときの水平移動機構の目標位置 -->
-    <param name="collect_horizontal_pos" value="-1.75"/>
+    <param name="collect_horizontal_pos" value="-150.0"/>
     <!-- 回収するときの上下移動機構の目標位置 -->
-    <param name="collect_vertical_pos" value="-1.5"/>
+    <param name="collect_vertical_pos" value="-125.0"/>
     <!-- 回収するときのハンド機構の目標位置 -->
-    <param name="collect_hand_pos" value="-0.43"/>
+    <param name="collect_hand_pos" value="-35.0"/>
     <!-- 機構制御を始める点と目標位置の距離 -->
     <param name="enable_arm_distance" value="0.1"/>
     <!-- 最大展開時のアームの長さ -->

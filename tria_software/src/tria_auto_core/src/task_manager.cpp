@@ -170,7 +170,7 @@ namespace tria_auto_core
         const auto delta_theta_is_ok = current_delta_theta_ < enable_arm_distance_;
 
         // 足回りの目標との誤差が閾値内かつ水平移動機構の制御を開始していないなら
-        if(!comp_manager_.horizontal_started && distance_is_ok && delta_theta_is_ok)
+        if(!comp_manager_.horizontal_started && distance_is_ok && delta_theta_is_ok && comp_manager_.wheel_started)
         {
             horizontal_send_goal(horizontal_goal_msg.target_position);
             RCLCPP_INFO(this->get_logger(), "水平移動機構の目標位置を送信しました");
@@ -202,11 +202,8 @@ namespace tria_auto_core
             // 回収もしくは設置モードなら、ハンド以外は原点に戻して終了する
             if(collect_or_release)
             {
-                auto goal_msg = MachineAction::Goal();
-                goal_msg.target_position = 0.0;
-
-                vertical_action_client_->async_send_goal(goal_msg);
-                horizontal_action_client_->async_send_goal(goal_msg);
+                vertical_send_goal(0.0);
+                horizontal_send_goal(0.0);
             }
 
             state_ = AutoState::WAIT;
