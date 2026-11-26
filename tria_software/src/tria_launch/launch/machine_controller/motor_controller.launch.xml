@@ -11,8 +11,8 @@
         <param name="vel.p_gain" value="0.355"/>
         <param name="vel.i_gain" value="0.0"/>
         <param name="vel.d_gain" value="0.006"/>
-        <param name="vel.max_output" value="5000"/>
-        <param name="vel.max_integral" value="1000"/>
+        <param name="vel.max_output" value="5000.0"/>
+        <param name="vel.max_integral" value="1000.0"/>
 
         <param name="goal_threshold" value="0.05"/>
 
