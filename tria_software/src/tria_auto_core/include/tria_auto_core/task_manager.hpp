@@ -14,6 +14,8 @@
 
 namespace tria_auto_core
 {
+    using namespace std::placeholders;
+
     /// @brief boolを束ねただけ。各制御が開始したのか、終了したのか、を保持する
     class ComponentManager
     {
@@ -87,6 +89,18 @@ namespace tria_auto_core
 
         // 足回りAction
         rclcpp_action::Client<WheelAction>::SharedPtr wheel_action_client_;
+        void wheel_send_goal()
+        {
+            auto wheel_goal_msg = WheelAction::Goal();
+            wheel_goal_msg.pose = target_pose_;
+            auto send_goal_options = rclcpp_action::Client<WheelAction>::SendGoalOptions();
+            send_goal_options.feedback_callback =
+            std::bind(&TaskManager::wheel_feedback_callback, this, _1, _2);
+            send_goal_options.result_callback =
+            std::bind(&TaskManager::wheel_result_callback, this, _1);
+
+            wheel_action_client_->async_send_goal(wheel_goal_msg, send_goal_options);
+        }
         void wheel_feedback_callback(GoalHandle_Wheel::SharedPtr, const std::shared_ptr<const WheelAction::Feedback> feedback)
         {
             current_distance_ = feedback->distance;
@@ -100,6 +114,15 @@ namespace tria_auto_core
         }
         // 昇降機構Action
         rclcpp_action::Client<MachineAction>::SharedPtr vertical_action_client_;
+        void vertical_send_goal(double target)
+        {
+            auto goal_msg = MachineAction::Goal();
+            goal_msg.target_position = target;
+            auto send_goal_options = rclcpp_action::Client<MachineAction>::SendGoalOptions();
+            send_goal_options.result_callback = std::bind(&TaskManager::vertical_result_callback, this, _1);
+
+            vertical_action_client_->async_send_goal(goal_msg, send_goal_options);
+        }
         void vertical_result_callback(const GoalHandle_Machine::WrappedResult & result)
         {
             RCLCPP_INFO(this->get_logger(), "昇降機構が目標位置に到達しました 残り距離:%lf", result.result->error);
@@ -108,6 +131,15 @@ namespace tria_auto_core
         }
         // 水平移動機構Action
         rclcpp_action::Client<MachineAction>::SharedPtr horizontal_action_client_;
+        void horizontal_send_goal(double target)
+        {
+            auto goal_msg = MachineAction::Goal();
+            goal_msg.target_position = target;
+            auto send_goal_options = rclcpp_action::Client<MachineAction>::SendGoalOptions();
+            send_goal_options.result_callback = std::bind(&TaskManager::horizontal_result_callback, this, _1);
+
+            horizontal_action_client_->async_send_goal(goal_msg, send_goal_options);
+        }
         void horizontal_result_callback(const GoalHandle_Machine::WrappedResult & result)
         {
             RCLCPP_INFO(this->get_logger(), "水平移動機構が目標位置に到達しました 残り距離:%lf", result.result->error);
@@ -116,6 +148,15 @@ namespace tria_auto_core
         }
         // ハンド機構Action
         rclcpp_action::Client<MachineAction>::SharedPtr hand_action_client_;
+        void hand_send_goal(double target)
+        {
+            auto goal_msg = MachineAction::Goal();
+            goal_msg.target_position = target;
+            auto send_goal_options = rclcpp_action::Client<MachineAction>::SendGoalOptions();
+            send_goal_options.result_callback = std::bind(&TaskManager::hand_result_callback, this, _1);
+
+            hand_action_client_->async_send_goal(goal_msg, send_goal_options);
+        }
         void hand_result_callback(const GoalHandle_Machine::WrappedResult & result)
         {
             RCLCPP_INFO(this->get_logger(), "ハンド機構が目標位置に到達しました 残り距離:%lf", result.result->error);

@@ -161,9 +161,7 @@ namespace tria_auto_core
         if(!comp_manager_.wheel_started)
         {
             RCLCPP_INFO(this->get_logger(), "回収を開始します");
-            auto wheel_goal_msg = WheelAction::Goal();
-            wheel_goal_msg.pose = target_pose_;
-            wheel_action_client_->async_send_goal(wheel_goal_msg);
+            wheel_send_goal();
             RCLCPP_INFO(this->get_logger(), "足回りの目標位置を送信しました");
             comp_manager_.wheel_started = true;
         }
@@ -174,7 +172,7 @@ namespace tria_auto_core
         // 足回りの目標との誤差が閾値内かつ水平移動機構の制御を開始していないなら
         if(!comp_manager_.horizontal_started && distance_is_ok && delta_theta_is_ok)
         {
-            horizontal_action_client_->async_send_goal(horizontal_goal_msg);
+            horizontal_send_goal(horizontal_goal_msg.target_position);
             RCLCPP_INFO(this->get_logger(), "水平移動機構の目標位置を送信しました");
             comp_manager_.horizontal_started = true;
         }
@@ -182,7 +180,7 @@ namespace tria_auto_core
         // 水平移動機構まで制御が終了したら、昇降機構の動作を許可する
         if(!comp_manager_.vertical_started && comp_manager_.horizontal_reached)
         {
-            vertical_action_client_->async_send_goal(vertical_goal_msg);
+            vertical_send_goal(vertical_goal_msg.target_position);
             RCLCPP_INFO(this->get_logger(), "昇降機構、ハンド機構の目標位置を送信しました");
             comp_manager_.vertical_started = true;
         }
@@ -190,7 +188,7 @@ namespace tria_auto_core
         // 昇降機構まで制御が終了したら、ハンド機構の動作を許可する
         if(!comp_manager_.hand_started && comp_manager_.vertical_reached)
         {
-            hand_action_client_->async_send_goal(hand_goal_msg);
+            hand_send_goal(hand_goal_msg.target_position);
             RCLCPP_INFO(this->get_logger(), "ハンド機構の目標位置を送信しました");
             comp_manager_.hand_started = true;
         }
