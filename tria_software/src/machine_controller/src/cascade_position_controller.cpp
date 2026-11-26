@@ -18,7 +18,7 @@ namespace machine_controller
         v_config.p_gain = this->declare_parameter("vel.p_gain", 1.0);
         v_config.i_gain = this->declare_parameter("vel.i_gain", 0.0);
         v_config.d_gain = this->declare_parameter("vel.d_gain", 0.0);
-        v_config.enable_dynamic_integral_reset = true;
+        v_config.enable_dynamic_integral_reset = false;
         v_config.max_output = this->declare_parameter("vel.max_output", 3000.0);
         v_config.max_integral = this->declare_parameter("vel.max_integral", 1000.0);
 
