@@ -17,8 +17,8 @@ namespace tria_auto_core
         target_pose_ = geometry_msgs::msg::PoseStamped();
         machine_target_ = MachineTarget{0.0, 0.0, 0.0};
         log_count_ = 0;
-        current_delta_theta_ = 0.0;
-        current_distance_ = 0.0;
+        current_delta_theta_ = 10000.0;
+        current_distance_ = 10000.0;
 
         state_ = AutoState::WAIT;
 
@@ -134,6 +134,18 @@ namespace tria_auto_core
 
     void TaskManager::progress_task(bool enable_log)
     {
+        // アームのみ原点に戻すモード
+        if(state_ == AutoState::RESET_ARM)
+        {
+            if(comp_manager_.horizontal_reached && comp_manager_.vertical_reached)
+            {
+                comp_manager_.reset();
+
+                state_ = AutoState::WAIT;
+            }
+
+            return;
+        }
         auto vertical_goal_msg = MachineAction::Goal();
         auto horizontal_goal_msg = MachineAction::Goal();
         auto hand_goal_msg = MachineAction::Goal();
@@ -156,21 +168,35 @@ namespace tria_auto_core
             horizontal_goal_msg.target_position = 0.0;
             hand_goal_msg.target_position = 0.0;
         }
+
+        if(enable_log)
+        {
+            // RCLCPP_INFO(this->get_logger(), "各種目標値 %lf, %lf, %lf", 
+            //     vertical_goal_msg.target_position, 
+            //     horizontal_goal_msg.target_position,
+            //     hand_goal_msg.target_position
+            // );
+        }
         
         // 足回りの制御を開始していないなら開始
         if(!comp_manager_.wheel_started)
         {
+            comp_manager_.reset();
+            current_distance_ = 10000.0;
+            current_delta_theta_ = 10000.0;
             RCLCPP_INFO(this->get_logger(), "回収を開始します");
             wheel_send_goal();
             RCLCPP_INFO(this->get_logger(), "足回りの目標位置を送信しました");
             comp_manager_.wheel_started = true;
         }
 
-        const auto distance_is_ok = current_distance_ < enable_arm_distance_;
-        const auto delta_theta_is_ok = current_delta_theta_ < enable_arm_distance_;
 
         // 足回りの目標との誤差が閾値内かつ水平移動機構の制御を開始していないなら
-        if(!comp_manager_.horizontal_started && distance_is_ok && delta_theta_is_ok && comp_manager_.wheel_started)
+        if(!comp_manager_.horizontal_started && 
+            current_distance_ < enable_arm_distance_ && 
+            current_delta_theta_ < enable_arm_distance_ && 
+            comp_manager_.wheel_started
+        )
         {
             horizontal_send_goal(horizontal_goal_msg.target_position);
             RCLCPP_INFO(this->get_logger(), "水平移動機構の目標位置を送信しました");
@@ -193,7 +219,7 @@ namespace tria_auto_core
             comp_manager_.hand_started = true;
         }
 
-        const auto collect_or_release = state_==AutoState::COLLECT || state_==AutoState::RELEASE;
+        const auto collect_or_release = state_== AutoState::COLLECT || state_== AutoState::RELEASE;
 
         // 終了判定
         if(comp_manager_.complete())
@@ -204,9 +230,13 @@ namespace tria_auto_core
             {
                 vertical_send_goal(0.0);
                 horizontal_send_goal(0.0);
-            }
 
-            state_ = AutoState::WAIT;
+                state_ = AutoState::RESET_ARM;
+            }
+            else
+            {
+                state_ = AutoState::WAIT;
+            }
         }
     }
 

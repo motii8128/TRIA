@@ -56,6 +56,7 @@ namespace tria_auto_core
         WAIT,
         COLLECT,
         RELEASE,
+        RESET_ARM,
         CALIBRATION
     };
 

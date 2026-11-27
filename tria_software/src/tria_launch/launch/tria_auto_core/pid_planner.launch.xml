@@ -16,7 +16,7 @@
     <param name="angular.max_integral" value="0.1"/>
     <param name="angular.max_output" value="0.25"/>
 
-    <param name="linear_threshold" value="0.02"/>
+    <param name="linear_threshold" value="0.01"/>
     <param name="angular_threshold" value="0.02"/>
 
     <!-- トピックのremap -->

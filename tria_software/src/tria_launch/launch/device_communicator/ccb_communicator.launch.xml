@@ -5,7 +5,7 @@
   <arg name="dest_port" default="64201"/>
 
   <arg name="interval_ms" default="1"/>
-  <arg name="timeout_ms" default="10"/>
+  <arg name="timeout_ms" default="1000"/>
 
   <!-- ノードの起動 -->
   <node pkg="device_communicator" exec="ccb_communicator" output="screen">

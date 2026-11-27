@@ -10,8 +10,8 @@ namespace device_communicator
     class RoboMaster
     {
     public:
-        float velocity = 0.0f;
-        float position = 0.0f;
+        double velocity = 0.0f;
+        double position = 0.0f;
         std::int16_t torque = 0;
 
         RoboMaster() = default;
@@ -26,7 +26,7 @@ namespace device_communicator
             velocity = velocity_in;
             position = angle_count / 100.0 - last_count_;
             torque = torque_in;
-            // velocity = static_cast<float>(velocity_in);
+            // velocity = static_cast<double>(velocity_in);
             // torque = torque_in;
 
             // if (last_count_ == -1)
@@ -64,7 +64,7 @@ namespace device_communicator
             //         }
             //     }
 
-            //     position += static_cast<float>(delta_count) / 8192.0f;
+            //     position += static_cast<double>(delta_count) / 8192.0f;
             // }
         }
 
