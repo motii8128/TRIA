@@ -134,6 +134,11 @@ int main()
                 sensor.angle = rm1.position * 100;
                 sensor.velocity = rm1.velocity;
                 sensor.torque = rm1.torque;
+
+                if(rm1.position > 100.0 && rm1.torque < -1400)
+                {
+                    rm1.position = -150.0;
+                }
             }
             if(can_recv_msg.id == 0x202)
             {

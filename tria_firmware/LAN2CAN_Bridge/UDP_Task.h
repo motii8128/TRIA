@@ -72,12 +72,22 @@ void udp_task(void)
             {
                 // データ受信に成功した場合
                 command = decode_command_packet(recv_buffer, recv_size);
+                udp_miss_count = 0;
             }
-            // else
-            // {
-            //     tria_CommandPacket zero = tria_CommandPacket_init_zero;
-            //     command = zero;
-            // }
+            else
+            {
+                // tria_CommandPacket zero = tria_CommandPacket_init_zero;
+                // command = zero;
+                udp_miss_count++;
+            }
+
+            if(udp_miss_count > 10)
+            {
+                udp_miss_count = 0;
+                tria_CommandPacket zero = tria_CommandPacket_init_zero;
+                command = zero;
+
+            }
 
 
             // 送信処理を行う
@@ -93,12 +103,12 @@ void udp_task(void)
                 if(send_result < 0)
                 {
                     //　送信失敗
-                    udp_miss_count++;
+                    // udp_miss_count++;
                 }
             }
             else
             {
-                udp_miss_count++;
+                // udp_miss_count++;
             }
         }
         
